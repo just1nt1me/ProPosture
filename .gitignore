@@ -1,6 +1,7 @@
 #heavy files
 fitness_poses_images_in/
 *.mp4
+*.jpg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
