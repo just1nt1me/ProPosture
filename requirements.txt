@@ -1,3 +1,5 @@
+streamlit
+fastapi
 numpy
 mediapipe
 opencv-python
