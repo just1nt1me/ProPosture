@@ -7,3 +7,4 @@ raw_data/
 *.mov
 .python-version
 .ipynb_checkpoints
+requirements_hippo.txt
