@@ -6,3 +6,4 @@ raw_data/
 *.csv
 *.mov
 .python-version
+.ipynb_checkpoints
