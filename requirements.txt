@@ -1,3 +1,9 @@
+streamlit
+fastapi
+uvicorn
+mlflow
+streamlit_webrtc
+av
 numpy
 mediapipe
 opencv-python
