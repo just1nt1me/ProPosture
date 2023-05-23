@@ -2,3 +2,7 @@
 media/
 *.mp4
 *.jpg
+/raw_data
+*.csv
+*.mov
+proposture_env
