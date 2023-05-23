@@ -6,3 +6,4 @@ raw_data/
 *.csv
 *.mov
 .python-version
+requirements_hippo.txt
