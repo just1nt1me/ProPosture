@@ -2,7 +2,7 @@
 media/
 *.mp4
 *.jpg
-/raw_data
+raw_data/
 *.csv
 *.mov
-proposture_env
+.python-version
