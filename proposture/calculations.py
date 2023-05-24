@@ -1,3 +1,5 @@
+import numpy as np
+
 #function to calculate angles
 def calculate_angle(a,b,c):
     a = np.array(a) # First
@@ -12,4 +14,4 @@ def calculate_angle(a,b,c):
 
     return round(angle)
 
-def get_landmarks()
+def get_angles()
