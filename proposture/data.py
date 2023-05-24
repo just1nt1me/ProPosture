@@ -63,6 +63,7 @@ def calculate_angle(a,b,c):
 
     return round(angle)
 
+# Calculate angles of joints
 def get_angles(l_shoulder, l_elbow, l_wrist, l_hip, l_ankle, l_ear, l_knee, r_shoulder, r_elbow, r_wrist, r_hip, r_ankle, r_ear, r_knee):
     #Neck
     left_neck_angle = calculate_angle(l_ear,l_shoulder,l_hip)
@@ -83,4 +84,4 @@ def get_angles(l_shoulder, l_elbow, l_wrist, l_hip, l_ankle, l_ear, l_knee, r_sh
     left_knee_angle = calculate_angle(l_hip, l_knee,l_ankle)
     right_knee_angle = calculate_angle(r_hip, r_knee, r_ankle)
 
-    return left_neck_angle, right_neck_angle, wrist_l_shoulder_angle, wrist_r_shoulder_angle, left_elbow_angle, right_elbow_angle, left_shoulder_angle, right_shoulder_angle, left_hip_angle, right_hip_angle, left_knee_angle, right_knee_angle
+    return left_elbow_angle, right_elbow_angle, left_neck_angle, right_neck_angle, wrist_l_shoulder_angle, wrist_r_shoulder_angle, left_shoulder_angle, right_shoulder_angle, left_hip_angle, right_hip_angle, left_knee_angle, right_knee_angle
