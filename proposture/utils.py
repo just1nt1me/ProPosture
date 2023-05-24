@@ -1,7 +1,6 @@
 # Import necessary libraries and modules
 import cv2
 import numpy as np
-import os
 import mediapipe as mp
 
 # What video are we using?
