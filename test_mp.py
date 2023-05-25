@@ -27,6 +27,7 @@ st.markdown('''## I'm a decent Data Scientist
 
 def camera_test():
     cap = cv2.VideoCapture(path)
+
     while(cap.isOpened()):
         ret, frame = cap.read()
 
@@ -43,7 +44,7 @@ def camera_test():
 
 
 def points_detection():
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(path)
     ## Setup mediapipe instance
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         while cap.isOpened():
