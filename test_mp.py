@@ -3,22 +3,31 @@ import numpy as np
 import os
 import mediapipe as mp
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer
-import av
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
-path=os.path.join(os.path.dirname(os.getcwd()),"ProPosture", "media","Forward_hands.mp4")
+path=os.path.join(os.path.dirname(os.getcwd()),"ProPosture","raw_data","pushups.mp4")
 
-st.title('Hello')
-st.markdown('''
-            This is a video test
-            Don't bother
-            ''')
-st.video(path)
+# st.title("Webcam Live Feed")
+# run = st.checkbox('Run')
+# FRAME_WINDOW = st.image([])
+# camera = cv2.VideoCapture(0)
+
+# while run:
+#     _, frame = camera.read()
+#     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+#     FRAME_WINDOW.image(frame)
+# else:
+#     st.write('Stopped')
+
+st.title("I'm a very good Data Scientist")
+st.markdown('''## I'm a decent Data Scientist
+            ### I'm not that good actually
+            #### Nothing works I hate streamlit''')
 
 def camera_test():
-    cap = cv2.VideoCapture('../ProPosture/media/Forward_hands.mp4')
+    cap = cv2.VideoCapture(path)
+
     while(cap.isOpened()):
         ret, frame = cap.read()
 
@@ -285,7 +294,7 @@ def curl_counter():
     return "Counted the curls successfully"
 
 if __name__ == "__main__":
-    st.video(camera_test())
+    camera_test()
     #points_detection()
     #detect_and_create()
     #display_calculated_angle()
