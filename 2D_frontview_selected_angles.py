@@ -167,18 +167,20 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
 
-            #3.1 Quality logic
-            # if l_shoulder_angle>50:
-            #     quality = 'BAD'
-            # elif l_shoulder_angle<50:
-            #     quality = 'GOOD'
+            #3 QUALITY LOGIC TESTING
 
-            #3.2 Counter and State logic
-            # if left_elbow_angle and right_elbow_angle > 160:
-            #     stage = "up"
-            # if left_elbow_angle and right_elbow_angle < 90 and stage =='up':
-            #     stage="down"
-            #     counter +=1
+            ##3.1 FULL REP
+            if left_elbow_angle and right_elbow_angle > 160:
+                stage = "up"
+            if left_elbow_angle and right_elbow_angle < 90 and stage =='up':
+                stage="down"
+                counter +=1
+
+            ##3.2 HAND-SHOULDER X-AXIS ALIGNMENT
+            if left_x_distance>1:
+                l_hand_shoulder_alignment_comment="Right Hand and shoulder not aligned"
+            if right_x_distance>1:
+                r_hand_shoulder_alignment="Right Hand and shoulder not aligned"
 
         except:
             pass
