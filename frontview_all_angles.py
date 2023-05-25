@@ -99,7 +99,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             #### Calculate angle
             left_elbow_angle = calculate_angle(l_shoulder, l_elbow, l_wrist)
             #### Visualize angle
-            left_elbow_text_position = (image.shape[1] - 220, 90)
+            left_elbow_text_position = (image.shape[1] - 220, 30)
             cv2.putText(image, str(f'Left elbow angle: {left_elbow_angle}'),
                            left_elbow_text_position,
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA
@@ -109,8 +109,8 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             #### Calculate angle
             right_elbow_angle = calculate_angle(r_shoulder, r_elbow, r_wrist)
             #### Visualize angle
-            right_elbow_text_position = (image.shape[1] - 220, 120)
-            cv2.putText(image, str(f'Left elbow angle: {right_elbow_angle}'),
+            right_elbow_text_position = (image.shape[1] - 220, 60)
+            cv2.putText(image, str(f'Right elbow angle: {right_elbow_angle}'),
                            right_elbow_text_position,
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
@@ -121,7 +121,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             #### Calculate angle
             l_shoulder_angle = calculate_angle(l_hip, l_shoulder, l_elbow)
             #### Visualize angle
-            left_shoulder_text_position = (image.shape[1] - 220, 30)
+            left_shoulder_text_position = (image.shape[1] - 220, 90)
             cv2.putText(image, str(f'Left shoulder angle: {l_shoulder_angle}'),
                            left_shoulder_text_position,
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA
@@ -131,7 +131,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             #### Calculate angle
             r_shoulder_angle = calculate_angle(r_hip, r_shoulder, r_elbow)
             #### Visualize angle
-            right_shoulder_text_position = (image.shape[1] - 220, 60)
+            right_shoulder_text_position = (image.shape[1] - 220, 120)
             cv2.putText(image, str(f'Right shoulder angle: {r_shoulder_angle}'),
                            right_shoulder_text_position,
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
