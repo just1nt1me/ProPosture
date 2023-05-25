@@ -1,16 +1,16 @@
 import copy
 from multiprocessing import Queue, Process
 from typing import NamedTuple, List
-
+import tempfile
 import streamlit as st
 from streamlit_webrtc import VideoProcessorBase, webrtc_streamer, WebRtcMode, ClientSettings
-
+import os
 import av
 import cv2 as cv
 import numpy as np
 import mediapipe as mp
 
-from main import draw_landmarks, draw_stick_figure
+from main import draw_landmarks, preprocess_image
 
 from fake_objects import FakeResultObject, FakeLandmarksObject, FakeLandmarkObject
 
@@ -45,10 +45,10 @@ def pose_process(
 
 
 class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
-    def __init__(self, show_landmarks=None) -> None:
+    def __init__(self, video_settings=None) -> None:
         self._in_queue = Queue()
         self._out_queue = Queue()
-        self.show_landmarks=show_landmarks,
+        self.video_settings=video_settings
         self._pose_process = Process(target=pose_process, kwargs={
             "in_queue": self._in_queue,
             "out_queue": self._out_queue,
@@ -66,24 +66,19 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
 
     def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
 
-        # カメラキャプチャ #####################################################
         image = frame.to_ndarray(format="bgr24")
 
-        image = cv.flip(image, 1)  # ミラー表示
+        image = cv.flip(image, 1)
         debug_image01 = copy.deepcopy(image)
 
-        # 検出実施 #############################################################
         image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
         results = self._infer_pose(image)
         # results = self._pose.process(image)
-        # 描画 ################################################################
         if results.pose_landmarks is not None:
-            # 描画
-            print(f'from recv: {self.show_landmarks}')
             debug_image01 = draw_landmarks(
                 debug_image01,
                 results.pose_landmarks,
-                show_landmarks=self.show_landmarks
+                video_settings=self.video_settings
             )
         return av.VideoFrame.from_ndarray(debug_image01, format="bgr24")
 
@@ -96,10 +91,10 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
 def main():
     with st.expander("If you want to film yourself from the front"):
 
-        show_landmarks = st.radio("Landmarks", ['None', 'Show'])
+        video_settings = st.radio("Settings", ['None', 'Show', 'Curl Counter'])
 
         def processor_factory():
-            return Tokyo2020PictogramVideoProcessor(show_landmarks=show_landmarks)
+            return Tokyo2020PictogramVideoProcessor(video_settings=video_settings)
 
         webrtc_ctx = webrtc_streamer(
             key="tokyo2020-Pictogram",
@@ -111,26 +106,17 @@ def main():
         st.session_state["started"] = webrtc_ctx.state.playing
 
         if webrtc_ctx.video_processor:
-            webrtc_ctx.video_processor.show_landmarks = show_landmarks
+            webrtc_ctx.video_processor.video_settings = video_settings
 
-    with st.expander("If you want to film yourself from the front"):
+    st.title("If you want to upload a side view")
 
-        show_landmarks = st.radio("Landmarks",['None', 'Show'])
+    # Display the file uploader and button
+    uploaded_file = st.file_uploader("Upload a video file", type=["mp4", "mov"])
 
-        def processor_factory():
-            return Tokyo2020PictogramVideoProcessor(show_landmarks=show_landmarks)
-
-        webrtc_ctx = webrtc_streamer(
-            key="tokyo2020-Pictogram",
-            mode=WebRtcMode.SENDRECV,
-            rtc_configuration={"iceServers": get_ice_servers()},
-            media_stream_constraints={"video": True, "audio": False},
-            video_processor_factory=processor_factory,
-        )
-        st.session_state["started"] = webrtc_ctx.state.playing
-
-        if webrtc_ctx.video_processor:
-            webrtc_ctx.video_processor.show_landmarks = show_landmarks
+    if uploaded_file is not None:
+        # Save the video file to a temporary location
+        processed_video = preprocess_image(uploaded_file, 854, 480)
+        st.video(processed_video)
 
 
 if __name__ == "__main__":
