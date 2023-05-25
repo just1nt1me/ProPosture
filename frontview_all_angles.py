@@ -42,7 +42,7 @@ path=os.path.join(os.path.dirname(os.getcwd()),"ProPosture","raw_data","pushups.
 
 # CAREFUL: THIS FILE OPERATES ON A LIVEFEED
 
-cap = cv2.VideoCapture(path)
+cap = cv2.VideoCapture(0)
 
 # Pushup position variable
 stage = None
@@ -99,7 +99,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             #### Calculate angle
             left_elbow_angle = calculate_angle(l_shoulder, l_elbow, l_wrist)
             #### Visualize angle
-            left_elbow_text_position = (image.shape[1] - 220, 90)
+            left_elbow_text_position = (image.shape[1] - 220, 30)
             cv2.putText(image, str(f'Left elbow angle: {left_elbow_angle}'),
                            left_elbow_text_position,
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA
@@ -109,8 +109,8 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             #### Calculate angle
             right_elbow_angle = calculate_angle(r_shoulder, r_elbow, r_wrist)
             #### Visualize angle
-            right_elbow_text_position = (image.shape[1] - 220, 120)
-            cv2.putText(image, str(f'Left elbow angle: {right_elbow_angle}'),
+            right_elbow_text_position = (image.shape[1] - 220, 60)
+            cv2.putText(image, str(f'Right elbow angle: {right_elbow_angle}'),
                            right_elbow_text_position,
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
@@ -121,7 +121,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             #### Calculate angle
             l_shoulder_angle = calculate_angle(l_hip, l_shoulder, l_elbow)
             #### Visualize angle
-            left_shoulder_text_position = (image.shape[1] - 220, 30)
+            left_shoulder_text_position = (image.shape[1] - 220, 90)
             cv2.putText(image, str(f'Left shoulder angle: {l_shoulder_angle}'),
                            left_shoulder_text_position,
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA
@@ -131,7 +131,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             #### Calculate angle
             r_shoulder_angle = calculate_angle(r_hip, r_shoulder, r_elbow)
             #### Visualize angle
-            right_shoulder_text_position = (image.shape[1] - 220, 60)
+            right_shoulder_text_position = (image.shape[1] - 220, 120)
             cv2.putText(image, str(f'Right shoulder angle: {r_shoulder_angle}'),
                            right_shoulder_text_position,
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
@@ -276,6 +276,31 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
 
             avg_knee_angle = round((left_knee_angle+right_knee_angle)/2)
 
+
+            ## 2.9 SHOWING Z coordinates of a few different objects
+            ### Display text 1
+            l_wrist_z_text_position = (image.shape[1] - 250, 520)
+            cv2.putText(image, str(f'z of L wrist: {round(l_wrist[2],4)}'),
+                           l_wrist_z_text_position,
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+            ### Display text 2
+            r_wrist_z_text_position = (image.shape[1] - 250, 550)
+            cv2.putText(image, str(f'z of R wrist: {round(r_wrist[2],4)}'),
+                           r_wrist_z_text_position,
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+            ### Display text 3
+            l_shoulder_z_text_position = (image.shape[1] - 250, 580)
+            cv2.putText(image, str(f'z of L shoulder: {round(l_shoulder[2],4)}'),
+                           l_shoulder_z_text_position,
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+            ### Display text 4
+            r_shoulder_z_text_position = (image.shape[1] - 250, 610)
+            cv2.putText(image, str(f'z of R shoulder: {round(r_shoulder[2],4)}'),
+                           r_shoulder_z_text_position,
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
+
+
             #3.1 Quality logic
             if l_shoulder_angle>50:
                 quality = 'BAD'
@@ -331,3 +356,10 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
     #CLOSING DISPLAY WINDOW
     cap.release()
     cv2.destroyAllWindows()
+
+# print(l_shoulder)
+# print(r_shoulder)
+# print(l_hip)
+# print(r_hip)
+# print(l_ear)
+# print(r_ear)
