@@ -2,15 +2,23 @@ import cv2
 import numpy as np
 import os
 import mediapipe as mp
+import streamlit as st
+from streamlit_webrtc import webrtc_streamer
+import av
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
-#path=os.path.join(os.path.dirname(os.getcwd()),"raw_data","pushups.mp4")
+path=os.path.join(os.path.dirname(os.getcwd()),"ProPosture", "media","Forward_hands.mp4")
 
-
+st.title('Hello')
+st.markdown('''
+            This is a video test
+            Don't bother
+            ''')
+st.video(path)
 
 def camera_test():
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture('../ProPosture/media/Forward_hands.mp4')
     while(cap.isOpened()):
         ret, frame = cap.read()
 
@@ -27,7 +35,7 @@ def camera_test():
 
 
 def points_detection():
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(path)
     ## Setup mediapipe instance
     with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         while cap.isOpened():
@@ -277,8 +285,8 @@ def curl_counter():
     return "Counted the curls successfully"
 
 if __name__ == "__main__":
-    #camera_test()
-    points_detection()
+    st.video(camera_test())
+    #points_detection()
     #detect_and_create()
     #display_calculated_angle()
     #curl_counter()
