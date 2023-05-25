@@ -174,7 +174,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
 
-            ##2.4 COMPUTE X-DISTANCE BETWEEN SHOULDER AND WRIST
+            ##2.5 COMPUTE X-DISTANCE BETWEEN SHOULDER AND WRIST
 
             if sideview_angle=="Left":
                 ### LEFT X-DISTANCE
@@ -254,10 +254,13 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
 
             ##3.3 NECK ALIGNMENT
             if sideview_angle=="Left":
-                if left_neck_angle >= 160:
+                if left_neck_angle >= 165:
+                    neck_status= "Perfect"
+                if left_neck_angle in range(150,165):
                     neck_status= "Good"
-                if left_neck_angle < 160:
+                if left_neck_angle < 150:
                     neck_status= "Bad"
+                    advice_neck = 'Tuck chin in'
                 neck_angle_text_position = (30, 100)
                 neck_status_text_position = (30,130)
                 cv2.putText(image, str(f'Neck angle: {left_neck_angle}'),
@@ -266,7 +269,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
                 cv2.putText(image, str(f'Neck status: {neck_status}'),
                             neck_status_text_position,
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-            advice_neck = 'Tuck chin in'
+
 
             ##3.4 BUTT ALIGNMENT
             # TODO: Knee quality logic
@@ -278,6 +281,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
 
             ##3.6 SHOULDERS
             # TODO: Neck quality logic
+            # check l'angle du coude et conditionne à ça pour checker la x-distance
             advice_hands = 'ALIGN HANDS WITH SHOULDERS'
 
 
