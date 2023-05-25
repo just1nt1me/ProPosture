@@ -2,6 +2,7 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import os
+import math
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
@@ -11,38 +12,20 @@ def calculate_angle(a,b,c):
     b = np.array(b) # Mid
     c = np.array(c) # End
 
-    #radians = np.arctan2(c[1]-b[1], c[0]-b[0]) - np.arctan2(a[1]-b[1], a[0]-b[0])
-    #angle = np.abs(radians*180.0/np.pi)
-
-    #Calculate the vectors ba and bc
-    ba = a - b
-    bc = c - b
-
-    # Calculate the dot product and the magnitudes of the vectors
-    dot_product = np.dot(ba, bc)
-    magnitude_ba = np.linalg.norm(ba)
-    magnitude_bc = np.linalg.norm(bc)
-
-    # Calculate the cosine of the angle using the dot product and magnitudes
-    cosine_angle = dot_product / (magnitude_ba * magnitude_bc)
-
-    # Calculate the angle in radians using the arccosine function
-    radians = np.arccos(cosine_angle)
-
-    # Convert radians to degrees
-    angle = np.degrees(radians)
+    radians = np.arctan2(c[1]-b[1], c[0]-b[0]) - np.arctan2(a[1]-b[1], a[0]-b[0])
+    angle = round(np.abs(radians*180.0/np.pi))
 
     if angle >180.0:
         angle = 360-angle
 
-    return round(angle)
+    return angle
 
-path=os.path.join(os.path.dirname(os.getcwd()),"ProPosture","raw_data","pushups.mp4")
+path=os.path.join(os.path.dirname(os.getcwd()),"ProPosture","raw_data","frontview_pushupbadgood.mp4")
 
 
-# CAREFUL: THIS FILE OPERATES ON A LIVEFEED
+# CAREFUL: THIS FILE OPERATES ON A LIVEFEE
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(path)
 
 # Pushup position variable
 stage = None
@@ -75,24 +58,25 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
 
             # 1. GETTING COORDINATES FOR ALL ANGLES
             ## ALL LEFT BODY PARTS
-            l_shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y,landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].z]
-            l_elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y,landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].z]
-            l_wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y,landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].z]
-            l_hip = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x,landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y,landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].z]
-            l_ankle = [landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].x,landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].y,landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].z]
-            l_ear= [landmarks[mp_pose.PoseLandmark.LEFT_EAR.value].x,landmarks[mp_pose.PoseLandmark.LEFT_EAR.value].y,landmarks[mp_pose.PoseLandmark.LEFT_EAR.value].z]
-            l_knee = [landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].x,landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].y,landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].z]
+            l_shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
+            l_elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
+            l_wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y]
+            l_hip = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x,landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y]
+            l_ankle = [landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].x,landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].y]
+            l_ear= [landmarks[mp_pose.PoseLandmark.LEFT_EAR.value].x,landmarks[mp_pose.PoseLandmark.LEFT_EAR.value].y]
+            l_knee = [landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].x,landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].y]
 
             ## ALL RIGHT BODY PARTS
-            r_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y,landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].z]
-            r_elbow = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y,landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].z]
-            r_wrist = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y,landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].z]
-            r_hip = [landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y,landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].z]
-            r_ankle = [landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].y,landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].z]
-            r_ear = [landmarks[mp_pose.PoseLandmark.RIGHT_EAR.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_EAR.value].y,landmarks[mp_pose.PoseLandmark.RIGHT_EAR.value].z]
-            r_knee = [landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].y,landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].z]
+            r_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
+            r_elbow = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
+            r_wrist = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
+            r_hip = [landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y]
+            r_ankle = [landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].y]
+            r_ear = [landmarks[mp_pose.PoseLandmark.RIGHT_EAR.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_EAR.value].y]
+            r_knee = [landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].x,landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].y]
 
             # 2. GETTING USEFUL ANGLES ONE-BY-ONE
+
             ## 2.1 GETTING ELBOW ANGLES --> ALLOW TO CHECK IF FULL REP
 
             ### LEFT ELBOW
@@ -135,6 +119,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
                            right_hip_text_position,
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
+
             ##2.3 GETTING KNEE ANGLES
 
             ### LEFT KNEE
@@ -157,6 +142,30 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
             avg_knee_angle = round((left_knee_angle+right_knee_angle)/2)
+
+
+            ##2.4 COMPUTE X-DISTANCE BETWEEN SHOULDER AND WRIST
+
+            ### LEFT X-DISTANCE
+            left_x_distance = round(abs(l_wrist[0]-l_shoulder[0]),4)
+            left_x_distance_text_position = (image.shape[1] - 220, 240)
+            cv2.putText(image, str(f'left_x_distance: {left_x_distance}'),
+                           left_x_distance_text_position,
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
+            ### RIGHT X-DISTANCE
+            right_x_distance = round(abs(r_wrist[0]-r_shoulder[0]),4)
+            right_x_distance_text_position = (image.shape[1] - 220, 270)
+            cv2.putText(image, str(f'right_x_distance: {right_x_distance}'),
+                           right_x_distance_text_position,
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
+            diff_distances=round(abs(left_x_distance-right_x_distance),4)
+            diff_x_distances_text_position = (image.shape[1] - 220, 300)
+            cv2.putText(image, str(f'diff x distances: {diff_distances}'),
+                           diff_x_distances_text_position,
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
 
             #3.1 Quality logic
             # if l_shoulder_angle>50:
