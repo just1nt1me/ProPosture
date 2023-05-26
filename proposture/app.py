@@ -61,6 +61,7 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START'):
             #get status box
             reps_stage = get_reps_and_stage(elbow_angles, rep_counter, stage)
             show_status(image, *reps_stage)
+
             #update stage and rep_counter for next loop
             stage = reps_stage[0]
             rep_counter = reps_stage[1]
@@ -77,23 +78,25 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START'):
             neck_status = show_neck(image, neck, sideview_angle, height, width, *landmarks)
             neck_status
             if not (neck[1] in advice_list):
-                    advice_list.append(neck[1])
+                print(len(advice_list))
+                advice_list.append(neck[1])
 
             # Display advice text
-            if len(advice_list) >0:
-                cv2.rectangle(image, (0, 80), (400,150), (36, 237, 227), -1)
-                # advice text
-                cv2.putText(image, "ADVICE:", (15,100),
-                        cv2.FONT_HERSHEY_DUPLEX, .5, (0,0,0), 1, cv2.LINE_AA)
-                cv2.putText(image, advice_list[0], (15,130),
-                        cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
-                if len(advice_list)>1:
-                    cv2.rectangle(image, (0, 150), (400,180), (36, 237, 227), -1)
-                    cv2.putText(image, advice_list[1], (15,170),
-                            cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
-                    if len(advice_list)>2:
-                        cv2.putText(image, advice_list[2], (15,190),
-                                cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
+            if len(advice_list) > 0:
+                cv2.rectangle(image, (0, 80), (400, 120), (36, 237, 227), -1)
+                cv2.putText(image, "ADVICE:", (15, 100),
+                            cv2.FONT_HERSHEY_DUPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
+
+                for i, advice in enumerate(advice_list):
+                    rectangle_y = 120 + i * 30  # Adjust the y-coordinate of the rectangle based on the index
+                    text_y = 130 + i * 30  # Adjust the y-coordinate of the text based on the index
+
+                    cv2.rectangle(image, (0, rectangle_y), (400, rectangle_y + 30), (36, 237, 227), -1)
+                    cv2.putText(image, advice, (15, text_y),
+                                cv2.FONT_HERSHEY_DUPLEX, 0.7, (0, 0, 0), 1, cv2.LINE_AA)
+
+
+
 
             #Render detections
             mp.solutions.drawing_utils.draw_landmarks(image, results.pose_landmarks,

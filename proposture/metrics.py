@@ -1,5 +1,4 @@
 '''This file takes the angles from data.py and outputs conditions for visuals.py'''
-import cv2
 
 # variables for get_reps_and_stage
 # stage = 'START' #default is start > DOWN, UP for reps
@@ -35,3 +34,24 @@ def get_neck(neck_angles, sideview_angle, advice_neck = None):
             neck_status_color = (14, 14, 232)
             advice_neck = 'Tuck chin in'
     return neck_status_color, advice_neck
+
+# Uses angles to write posture conditional statements
+# def get_hips(hip_angles, sideview_angle, advice_hip = None):
+#     left_hip_angle, right_hip_angle = hip_angles
+#     if sideview_angle == 'left':
+#         if left_hip_angle >= 165:
+#             hip_status_color= (31, 194, 53)
+#         if left_hip_angle in range(150,165):
+#             neck_status_color= (0, 255, 255)
+#         if left_hip_angle < 150:
+#             hip_status_color= (14, 14, 232)
+#             advice_hip = 'Tuck chin in'
+#     if sideview_angle == 'right':
+#         if right_hip_angle >= 165:
+#             hip_status_color= (31, 194, 53)
+#         if right_hip_angle in range(150,165):
+#             hip_status_color= (0, 255, 255)
+#         if right_hip_angle < 150:
+#             hip_status_color = (14, 14, 232)
+#             advice_hip = 'Tuck chin in'
+#     return hip_status_color, advice_hip
