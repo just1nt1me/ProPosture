@@ -5,6 +5,13 @@ mlflow
 streamlit_webrtc
 av
 numpy
+copy
+twilio.rest
+multiprocessing
+math
+argparse
+typing
+logging
 mediapipe
 opencv-python
 ipykernel
