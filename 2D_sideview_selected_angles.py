@@ -19,7 +19,9 @@ def calculate_angle(a,b,c):
 
     return angle
 
-path=os.path.join(os.path.dirname(os.getcwd()),"ProPosture","raw_data","new_pushup.mp4")
+list_videos=["new_pushup.mp4","hip_test_pushup.mp4"]
+
+path=os.path.join(os.path.dirname(os.getcwd()),"ProPosture","raw_data",list_videos[1])
 
 
 # CAREFUL: THIS FILE OPERATES ON A LIVEFEED
@@ -204,13 +206,13 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
                 if left_elbow_angle < 90:
                     stage="down"
                 rep_counter_text_position = (30, 30)
-                rep_stage_text_position = (30, 60)
+                #rep_stage_text_position = (30, 60)
                 cv2.putText(image, str(f'Reps count: {counter}'),
                             rep_counter_text_position,
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-                cv2.putText(image, str(f'Rep stage: {stage}'),
-                            rep_stage_text_position,
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+                # cv2.putText(image, str(f'Rep stage: {stage}'),
+                #             rep_stage_text_position,
+                #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
             if sideview_angle=="Right":
                 if right_elbow_angle > 160 and stage =='down':
@@ -229,61 +231,132 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
             ##3.2 FULL REP VERIFIER
-            # if sideview_angle=="Left":
-            #     #1st rep counter
-            #     if left_elbow_angle > 160:
-            #         stage = "up"
-            #     if left_elbow_angle < 90 and stage =='up':
-            #         stage="down"
-            #         counter +=1
-            #     rep_counter_text_position = (30, 30)
-            #     cv2.putText(image, str(f'Reps count: {counter}'),
-            #                 rep_counter_text_position,
-            #                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+            if sideview_angle=="Left":
+                #1st rep counter
+                if left_elbow_angle > 140:
+                    advice = "Push push push u dickhead"
+                if left_elbow_angle in range(160,180):
+                    advice = "Good now u can go down dickhead"
+                if left_elbow_angle < 90:
+                    advice="Lower lower lower u dickhead"
+                if left_elbow_angle in range(0,70):
+                    advice="Good now u can go up dickhead"
+                rep_advice_text_position = (30, 60)
+                cv2.putText(image, str(f'{advice}'),
+                            rep_advice_text_position,
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
-            # if sideview_angle=="Right":
-            #     if right_elbow_angle > 160:
-            #         stage = "up"
-            #     if right_elbow_angle < 90 and stage =='up':
-            #         stage="down"
-            #         counter +=1
-            #     rep_counter_text_position = (30, 30)
-            #     cv2.putText(image, str(f'Reps count: {counter}'),
-            #                 rep_counter_text_position,
-            #                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+            if sideview_angle=="Right":
+                #1st rep counter
+                if right_elbow_angle > 140:
+                    advice = "Push push push u dickhead"
+                if right_elbow_angle in range(160,180):
+                    advice = "Good now u can go down dickhead"
+                if right_elbow_angle < 90:
+                    advice="Lower lower lower u dickhead"
+                if right_elbow_angle in range(0,70):
+                    advice="Good now u can go up dickhead"
+                rep_advice_text_position = (30, 60)
+                cv2.putText(image, str(f'{advice}'),
+                            rep_advice_text_position,
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
             ##3.3 NECK ALIGNMENT
             if sideview_angle=="Left":
-                if left_neck_angle >= 165:
-                    neck_status= "Perfect"
-                if left_neck_angle in range(150,165):
+                if left_neck_angle in range(155,180):
                     neck_status= "Good"
-                if left_neck_angle < 150:
+                if left_neck_angle < 155:
                     neck_status= "Bad"
                     advice_neck = 'Tuck chin in'
-                neck_angle_text_position = (30, 100)
-                neck_status_text_position = (30,130)
-                cv2.putText(image, str(f'Neck angle: {left_neck_angle}'),
-                            neck_angle_text_position,
+                neck_status_text_position = (30,100)
+                cv2.putText(image, str(f'Neck status: {neck_status}'),
+                            neck_status_text_position,
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
+            if sideview_angle=="Right":
+                if right_neck_angle in range(155,180):
+                    neck_status= "Good"
+                if right_neck_angle < 155:
+                    neck_status= "Bad"
+                    advice_neck = 'Tuck chin in'
+                neck_status_text_position = (30,100)
                 cv2.putText(image, str(f'Neck status: {neck_status}'),
                             neck_status_text_position,
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
 
             ##3.4 BUTT ALIGNMENT
-            # TODO: Knee quality logic
-            advice_butt = 'Lower hips'
+            if sideview_angle=="Left":
+                if left_hip_angle in range(170,180):
+                    hip_status= "Good"
+                if left_hip_angle < 170:
+                    hip_status= "Bad"
+                    advice_butt = 'Lower hips'
+                hip_status_text_position = (30,140)
+                cv2.putText(image, str(f'Hips status: {hip_status}'),
+                            hip_status_text_position,
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
+            if sideview_angle=="Right":
+                if right_hip_angle in range(170,180):
+                    hip_status= "Good"
+                if right_hip_angle < 170:
+                    hip_status= "Bad"
+                    advice_butt = 'Lower hips'
+                hip_status_text_position = (30,140)
+                cv2.putText(image, str(f'Hips status: {hip_status}'),
+                            hip_status_text_position,
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
             ##3.5 KNEE ALIGNMENT
-            # TODO: Neck quality logic
-            advice_knee = 'Straighten legs'
+            if sideview_angle=="Left":
+                if left_knee_angle in range(155,180):
+                    knee_status= "Good"
+                if left_knee_angle < 155:
+                    knee_status= "Bad"
+                    advice_knee = 'Straighten legs'
+                knee_status_text_position = (30,180)
+                cv2.putText(image, str(f'Knees status: {knee_status}'),
+                            knee_status_text_position,
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
+            if sideview_angle=="Right":
+                if right_knee_angle in range(155,180):
+                    knee_status= "Good"
+                if right_knee_angle < 155:
+                    knee_status= "Bad"
+                    advice_knee = 'Straighten legs'
+                knee_status_text_position = (30,180)
+                cv2.putText(image, str(f'Knees status: {knee_status}'),
+                            knee_status_text_position,
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
 
             ##3.6 SHOULDERS
-            # TODO: Neck quality logic
-            # check l'angle du coude et conditionne à ça pour checker la x-distance
-            advice_hands = 'ALIGN HANDS WITH SHOULDERS'
+            #checking first if person is at the top of his pushup, then test x-distance
+            if sideview_angle=="Left":
+                if left_elbow_angle>150:
+                    if left_x_distance<0.05:
+                        hands_status="Good"
+                    if left_x_distance>0.05:
+                        hands_status="Bad"
+                        advice_hands = 'Align hands with shoulders'
+                hands_status_text_position = (30,220)
+                cv2.putText(image, str(f'Hands position: {hands_status}'),
+                            hands_status_text_position,
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
+            if sideview_angle=="Right":
+                if left_elbow_angle>150:
+                    if left_x_distance<=0.05:
+                        hands_status="Good"
+                    if left_x_distance>0.05:
+                        hands_status="Bad"
+                        advice_hands = 'Align hands with shoulders'
+                hands_status_text_position = (30,220)
+                cv2.putText(image, str(f'Hands position: {hands_status}'),
+                            hands_status_text_position,
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
 
         except:

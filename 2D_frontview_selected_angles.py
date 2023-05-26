@@ -23,7 +23,7 @@ def calculate_angle(a,b,c):
 path=os.path.join(os.path.dirname(os.getcwd()),"ProPosture","raw_data","frontview_pushupbadgood.mp4")
 
 
-# CAREFUL: THIS FILE OPERATES ON A LIVEFEE
+# CAREFUL: THIS FILE OPERATES ON A LIVEFEED
 
 cap = cv2.VideoCapture(path)
 
@@ -78,109 +78,70 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             # 2. GETTING USEFUL ANGLES ONE-BY-ONE
 
             ## 2.1 GETTING ELBOW ANGLES --> ALLOW TO CHECK IF FULL REP
-
-            ### LEFT ELBOW
-            #### Calculate angle
+            ### Calculate angles
             left_elbow_angle = calculate_angle(l_shoulder, l_elbow, l_wrist)
-            #### Visualize angle
-            left_elbow_text_position = (image.shape[1] - 220, 30)
-            cv2.putText(image, str(f'Left elbow angle: {left_elbow_angle}'),
-                           left_elbow_text_position,
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA
-                                )
-
-            ### RIGHT ELBOW
-            #### Calculate angle
             right_elbow_angle = calculate_angle(r_shoulder, r_elbow, r_wrist)
-            #### Visualize angle
-            right_elbow_text_position = (image.shape[1] - 220, 60)
-            cv2.putText(image, str(f'Left elbow angle: {right_elbow_angle}'),
-                           right_elbow_text_position,
+            ### Calculate average angle
+            average_elbow_angle=(left_elbow_angle+right_elbow_angle)/2
+            ### Visualise
+            average_elbow_text_position = (image.shape[1] - 220, 30)
+            cv2.putText(image, str(f'Elbows angle: {average_elbow_angle}'),
+                           average_elbow_text_position,
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
 
-            ##2.2 GETTING HIPS ANGLES --> ALLOW TO CHECK FOR BUTT ALIGNMENT
-
-            ### LEFT HIP
-            #### Calculate angle
-            left_hip_angle = calculate_angle(l_shoulder, l_hip, l_ankle)
-            #### Visualize angle
-            left_hip_text_position = (image.shape[1] - 220, 100)
-            cv2.putText(image, str(f'Left hip angle: {left_hip_angle}'),
-                           left_hip_text_position,
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-
-            ### RIGHT HIP
-            #### Calculate angle
-            right_hip_angle = calculate_angle(r_shoulder, r_hip, r_ankle)
-            #### Visualize angle
-            right_hip_text_position = (image.shape[1] - 220, 130)
-            cv2.putText(image, str(f'Right hip angle: {right_hip_angle}'),
-                           right_hip_text_position,
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-
-
-            ##2.3 GETTING KNEE ANGLES
-
-            ### LEFT KNEE
-            #### Calculate angle
-            left_knee_angle = calculate_angle(l_hip, l_knee,l_ankle)
-            #### Visualize angle
-            left_knee_text_position = (image.shape[1] - 220, 170)
-            cv2.putText(image, str(f'Left knee angle: {left_knee_angle}'),
-                           left_knee_text_position,
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA
-                                )
-
-            ### RIGHT KNEE
-            #### Calculate angle
-            right_knee_angle = calculate_angle(r_hip, r_knee, r_ankle)
-            #### Visualize angle
-            right_knee_text_position = (image.shape[1] - 220, 200)
-            cv2.putText(image, str(f'Right knee angle: {right_knee_angle}'),
-                           right_knee_text_position,
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-
-            avg_knee_angle = round((left_knee_angle+right_knee_angle)/2)
-
-
-            ##2.4 COMPUTE X-DISTANCE BETWEEN SHOULDER AND WRIST
-
-            ### LEFT X-DISTANCE
+            ##2.2 COMPUTE X-DISTANCE BETWEEN SHOULDER AND WRIST
+            ### Calculate angles
             left_x_distance = round(abs(l_wrist[0]-l_shoulder[0]),4)
-            left_x_distance_text_position = (image.shape[1] - 220, 240)
-            cv2.putText(image, str(f'left_x_distance: {left_x_distance}'),
-                           left_x_distance_text_position,
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-
-            ### RIGHT X-DISTANCE
             right_x_distance = round(abs(r_wrist[0]-r_shoulder[0]),4)
-            right_x_distance_text_position = (image.shape[1] - 220, 270)
-            cv2.putText(image, str(f'right_x_distance: {right_x_distance}'),
-                           right_x_distance_text_position,
-                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
-
-            diff_distances=round(abs(left_x_distance-right_x_distance),4)
-            diff_x_distances_text_position = (image.shape[1] - 220, 300)
-            cv2.putText(image, str(f'diff x distances: {diff_distances}'),
-                           diff_x_distances_text_position,
+            ### Calculate average angle
+            x_distances_mean=round(abs((left_x_distance+right_x_distance)/2),4)
+            ### Visualise
+            x_distances_mean_text_position = (image.shape[1] - 220, 70)
+            cv2.putText(image, str(f'Wrist-shoulder: {x_distances_mean}'),
+                           x_distances_mean_text_position,
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
 
             #3 QUALITY LOGIC TESTING
 
-            ##3.1 FULL REP
-            if left_elbow_angle and right_elbow_angle > 160:
-                stage = "up"
-            if left_elbow_angle and right_elbow_angle < 90 and stage =='up':
-                stage="down"
+            ##3.1 REP COUNTER
+            if average_elbow_angle > 160 and stage =='down':
                 counter +=1
+            if average_elbow_angle > 160:
+                stage = "up"
+            if average_elbow_angle < 90:
+                stage="down"
+            rep_counter_text_position = (30, 30)
+            #rep_stage_text_position = (30, 60)
+            cv2.putText(image, str(f'Reps count: {counter}'),
+                        rep_counter_text_position,
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+            # cv2.putText(image, str(f'Rep stage: {stage}'),
+            #             rep_stage_text_position,
+            #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
-            ##3.2 HAND-SHOULDER X-AXIS ALIGNMENT
-            if left_x_distance>1:
-                l_hand_shoulder_alignment_comment="Right Hand and shoulder not aligned"
-            if right_x_distance>1:
-                r_hand_shoulder_alignment="Right Hand and shoulder not aligned"
+            ##3.2 FULL REP VERIFIER
+            if average_elbow_angle in range(170,180):
+                advice = "GOOD JOB U LOSER ! Now down"
+            if average_elbow_angle in range(0,65):
+                advice="GOOD JOB U LOSER ! Now push up"
+            rep_advice_text_position = (30, 60)
+            cv2.putText(image, str(f'{advice}'),
+                        rep_advice_text_position,
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
+            ##3.3 HAND-SHOULDER X-AXIS ALIGNMENT
+            if average_elbow_angle>150:
+                if x_distances_mean<=0.075:
+                    hands_status="Good"
+                if x_distances_mean>0.075:
+                    hands_status="Bad"
+                    advice_hands = 'Align hands with shoulder'
+            hands_status_text_position = (30,100)
+            cv2.putText(image, str(f'Hands position: {hands_status}'),
+                        hands_status_text_position,
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
         except:
             pass
