@@ -14,4 +14,4 @@ def calculate_angle(a,b,c):
 
     return round(angle)
 
-def get_angles()
+#def get_angles()
