@@ -15,7 +15,7 @@ def load_video(video_file_path):
 def get_video_dimensions(cap):
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    return width, height
+    return height, width
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
@@ -47,6 +47,18 @@ def get_landmarks(results):
     except:
             pass
     return l_shoulder, l_elbow, l_wrist, l_hip, l_ankle, l_ear, l_knee, r_shoulder, r_elbow, r_wrist, r_hip, r_ankle, r_ear, r_knee
+
+# CHECKING WHICH SIDE THE PERSON IS FILMING
+def get_sideview(*landmarks):
+    l_ear = landmarks[5]
+    r_ear = landmarks[12]
+    l_hip = landmarks[3]
+    r_hip = landmarks[10]
+    if l_ear[0] < l_hip[0]:
+        sideview_angle="left"
+    if r_ear[0] > r_hip[0]:
+        sideview_angle="right"
+    return sideview_angle
 
 # Function to calculate angles
 def calculate_angle(a,b,c):

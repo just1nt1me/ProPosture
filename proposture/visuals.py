@@ -1,6 +1,13 @@
 '''This file outputs advice based on metrics.py'''
 import cv2
+import numpy as np
 from metrics import get_reps_and_stage
+from utils import get_landmarks, get_video_dimensions
+
+# Variables
+# width, height = get_video_dimensions
+#landmarks
+# landmarks = get_landmarks
 
 #advice variables
 advice_shoulder = None # if elbows are too far out
@@ -11,6 +18,8 @@ advice_rep = None # if not full rep
 advice_hand = None # if hands are not aligned under shoulders
 advice_wrist = None
 advice_list = [] # store advice text
+
+
 
 #STATUS BOX
 def show_status(image, stage, rep_counter):
@@ -31,3 +40,24 @@ def show_status(image, stage, rep_counter):
                 cv2.FONT_HERSHEY_SIMPLEX, 2, (255,255,255), 3, cv2.LINE_AA)
 
     return status_box, reps_title, rep_count_text, stage_title, stage_text
+
+
+
+# Determine status
+def show_neck(image, neck, sideview_angle, height, width, *landmarks):
+    if sideview_angle == 'left':
+        neck_status = cv2.circle(image, tuple(np.multiply(landmarks[5], [width, height]).astype(int)),
+                        20, neck[0], -1)
+    if sideview_angle == 'right':
+        neck_status = cv2.circle(image, tuple(np.multiply(landmarks[12], [width, height]).astype(int)),
+                        20, neck[0], -1)
+    return neck_status
+
+# TODO: HIP
+
+# TODO: KNEES
+
+# TODO: SHOULDER/WRIST ALIGNMENT
+
+# Get advice
+# def get_advice(image, neck):
