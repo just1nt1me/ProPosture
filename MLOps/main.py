@@ -209,7 +209,7 @@ def load_image(path : str):
         image = tf.cast(tf.image.resize_with_pad(image, 160, 256), dtype=tf.int32)
         return image
 
-def preprocess_image(image, new_width, new_height, path):
+def preprocess_image(image, new_width, new_height, path:None):
     """
     take an frame of a video converted to an image through opencv,
     wth the new_width and new height  for reshaping purpose.
