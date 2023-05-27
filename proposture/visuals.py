@@ -60,4 +60,27 @@ def show_neck(image, neck, sideview_angle, height, width, *landmarks):
 # TODO: SHOULDER/WRIST ALIGNMENT
 
 # Get advice
-# def get_advice(image, neck):
+# def get_advice(image, advice_list):
+#     if len(advice_list) > 0:
+#         cv2.rectangle(image, (0, 80), (400,150), (36, 237, 227), -1)
+#         # advice text
+#         cv2.putText(image, "ADVICE:", (15,100),
+#                 cv2.FONT_HERSHEY_DUPLEX, .5, (0,0,0), 1, cv2.LINE_AA)
+#         cv2.putText(image, advice_list[0], (15,130),
+#                 cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
+#         if len(advice_list)>1:
+#             cv2.rectangle(image, (0, 150), (400,180), (36, 237, 227), -1)
+#             cv2.putText(image, advice_list[1], (15,170),
+#                     cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
+#             if len(advice_list)>2:
+#                 cv2.putText(image, advice_list[2], (15,190),
+#                         cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
+#                 if len(advice_list)>3:
+#                     cv2.putText(image, advice_list[3], (15,190),
+#                             cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
+#                     if len(advice_list)>4:
+#                         cv2.putText(image, advice_list[4], (15,190),
+#                                 cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
+#                         if len(advice_list)>5:
+#                             cv2.putText(image, advice_list[5], (15,190),
+#                                     cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
