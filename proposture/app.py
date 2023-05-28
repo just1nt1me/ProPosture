@@ -3,17 +3,9 @@ import cv2
 import mediapipe as mp
 
 #import modules
-<<<<<<< HEAD
-from utils import load_video, get_angles, get_landmarks, get_video_dimensions, get_sideview
-from visuals import show_status
-from metrics import get_reps_and_stage, get_rep_advice, get_neck, get_hip, get_knee, get_hand, get_hand_align, get_shoulder_elbow_dist
-from visuals import show_neck, show_hip, show_knee, show_hand, show_align, show_elbow
-=======
 from proposture.utils import load_video, get_angles, get_landmarks, get_video_dimensions, get_sideview
-from proposture.visuals import show_status
-from proposture.metrics import get_reps_and_stage, get_neck
-from proposture.visuals import show_neck
->>>>>>> MLOps
+from proposture.metrics import get_reps_and_stage, get_rep_advice, get_neck, get_hip, get_knee, get_hand, get_hand_align, get_shoulder_elbow_dist
+from proposture.visuals import show_neck, show_hip, show_knee, show_hand, show_align, show_elbow
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
