@@ -135,7 +135,7 @@ def main():
             if not ret:
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
-            stframe.image(draw_landmarks(frame))
+            stframe.image(draw_landmarks(frame, video_settings='Curl Counter'))
             time.sleep(0.02)
 
 if __name__ == "__main__":
