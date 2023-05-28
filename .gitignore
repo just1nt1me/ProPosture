@@ -9,3 +9,4 @@ raw_data/
 .ipynb_checkpoints
 requirements_hippo.txt
 *.pyc
+__pycache__/
