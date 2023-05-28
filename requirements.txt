@@ -4,19 +4,15 @@ streamlit_webrtc
 av
 numpy
 fastapi
-math
-argparse
-typing
 twilio
-logging
 mediapipe
 opencv-python
 # ipykernel
 # ipdb
-# # matplotlib
-# # seaborn
-# # google-cloud-bigquery
-# # google-cloud-storage
+# matplotlib
+# seaborn
+# google-cloud-bigquery
+# google-cloud-storage
 # jupyter-contrib-core==0.4.0
 # jupyter-contrib-nbextensions==0.5.1
 # jupyter-highlight-selected-word==0.2.0
