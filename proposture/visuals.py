@@ -1,8 +1,6 @@
 '''This file outputs advice based on metrics.py'''
 import cv2
 import numpy as np
-<<<<<<< HEAD
-=======
 from proposture.metrics import get_reps_and_stage
 from proposture.utils import get_landmarks, get_video_dimensions
 
@@ -22,7 +20,6 @@ advice_wrist = None
 advice_list = [] # store advice text
 
 
->>>>>>> MLOps
 
 #STATUS BOX
 def show_status(image, rep_advice, stage, rep_counter):
