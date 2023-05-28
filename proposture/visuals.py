@@ -1,6 +1,28 @@
 '''This file outputs advice based on metrics.py'''
 import cv2
 import numpy as np
+<<<<<<< HEAD
+=======
+from proposture.metrics import get_reps_and_stage
+from proposture.utils import get_landmarks, get_video_dimensions
+
+# Variables
+# width, height = get_video_dimensions
+#landmarks
+# landmarks = get_landmarks
+
+#advice variables
+advice_shoulder = None # if elbows are too far out
+advice_butt = None # if butt is too high
+advice_knee = None # if knees are sagging
+advice_neck = None # if head is not aligned with back
+advice_rep = None # if not full rep
+advice_hand = None # if hands are not aligned under shoulders
+advice_wrist = None
+advice_list = [] # store advice text
+
+
+>>>>>>> MLOps
 
 #STATUS BOX
 def show_status(image, rep_advice, stage, rep_counter):

@@ -1,6 +1,0 @@
-runtime: python39
-threadsafe: true
-handlers:
-- url: /.*
-  script: auto
-entrypoint: streamlit run MLOps/streamlit_app.py

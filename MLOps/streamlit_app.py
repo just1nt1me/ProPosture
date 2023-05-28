@@ -5,8 +5,9 @@ import tempfile
 import streamlit as st
 from streamlit_webrtc import VideoProcessorBase, webrtc_streamer, WebRtcMode, ClientSettings
 import os
+import time
 import av
-import cv2 as cv
+import cv2
 import numpy as np
 import mediapipe as mp
 
@@ -22,10 +23,13 @@ _SENTINEL_ = "_SENTINEL_"
 
 def pose_process(
     in_queue: Queue,
-    out_queue: Queue
+    out_queue: Queue,
+    model_complexity=0,
 ):
     mp_pose = mp.solutions.pose
-    pose = mp_pose.Pose()
+    pose = mp_pose.Pose(
+        model_complexity=model_complexity
+    )
 
     while True:
         input_item = in_queue.get(timeout=10)
@@ -45,13 +49,14 @@ def pose_process(
 
 
 class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
-    def __init__(self, video_settings=None) -> None:
+    def __init__(self, video_settings=None, model_complexity=0) -> None:
         self._in_queue = Queue()
         self._out_queue = Queue()
         self.video_settings=video_settings
         self._pose_process = Process(target=pose_process, kwargs={
             "in_queue": self._in_queue,
             "out_queue": self._out_queue,
+            "model_complexity": model_complexity,
         })
 
         self._pose_process.start()
@@ -68,10 +73,10 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
 
         image = frame.to_ndarray(format="bgr24")
 
-        image = cv.flip(image, 1)
-        debug_image01 = copy.deepcopy(image)
+        image = cv2.flip(image, 1)
+        debug_image01 = image
 
-        image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         results = self._infer_pose(image)
         # results = self._pose.process(image)
         if results.pose_landmarks is not None:
@@ -90,11 +95,13 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
 
 def main():
     with st.expander("If you want to film yourself from the front"):
+        model_complexity = st.radio("Model complexity", [0, 1, 2], index=0)
 
-        video_settings = st.radio("Settings", ['None', 'Show', 'Curl Counter'])
+        video_settings = st.radio("Settings", ['None', 'Show', 'Pushups aide'])
 
         def processor_factory():
-            return Tokyo2020PictogramVideoProcessor(video_settings=video_settings)
+            return Tokyo2020PictogramVideoProcessor(video_settings=video_settings,
+                                                    model_complexity=model_complexity)
 
         webrtc_ctx = webrtc_streamer(
             key="tokyo2020-Pictogram",
@@ -118,25 +125,18 @@ def main():
         # string_data = video_path.read()
         tfile = tempfile.NamedTemporaryFile(delete=False)
         tfile.write(uploaded_file.read())
-
-
-        vf = cv.VideoCapture(tfile.name)
+        vf = cv2.VideoCapture(tfile.name)
 
         stframe = st.empty()
-
         while vf.isOpened():
             ret, frame = vf.read()
+            # results = Tokyo2020PictogramVideoProcessor._infer_pose(_, frame)
             # if frame is read correctly ret is True
             if not ret:
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
-            gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-            stframe.image(gray)
-        # user_video = load_image(tfile)
-        # vf = cv.VideoCapture(user_video)
-        # processed_video = preprocess_image(vf, 854, 480)
-        # st.video(processed_video)
-
+            stframe.image(draw_landmarks(frame, video_settings='Pushups aide'))
+            time.sleep(0.02)
 
 if __name__ == "__main__":
     main()
