@@ -5,8 +5,9 @@ import tempfile
 import streamlit as st
 from streamlit_webrtc import VideoProcessorBase, webrtc_streamer, WebRtcMode, ClientSettings
 import os
+import time
 import av
-import cv2 as cv
+import cv2
 import numpy as np
 import mediapipe as mp
 
@@ -68,10 +69,10 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
 
         image = frame.to_ndarray(format="bgr24")
 
-        image = cv.flip(image, 1)
+        image = cv2.flip(image, 1)
         debug_image01 = copy.deepcopy(image)
 
-        image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         results = self._infer_pose(image)
         # results = self._pose.process(image)
         if results.pose_landmarks is not None:
@@ -118,25 +119,23 @@ def main():
         # string_data = video_path.read()
         tfile = tempfile.NamedTemporaryFile(delete=False)
         tfile.write(uploaded_file.read())
-
-
-        vf = cv.VideoCapture(tfile.name)
+        vf = cv2.VideoCapture(tfile.name)
 
         stframe = st.empty()
-
         while vf.isOpened():
             ret, frame = vf.read()
+            # results = Tokyo2020PictogramVideoProcessor._infer_pose(_, frame)
             # if frame is read correctly ret is True
             if not ret:
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
-            gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-            stframe.image(gray)
-        # user_video = load_image(tfile)
-        # vf = cv.VideoCapture(user_video)
-        # processed_video = preprocess_image(vf, 854, 480)
-        # st.video(processed_video)
-
+            # new_image = preprocess_image(frame, 480, 640)
+            # print(new_image.shape)
+            # new_image = np.reshape(new_image,(854,480, 3))
+            # processed_image = draw_landmarks(new_image)
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            stframe.image(draw_landmarks(frame))
+            time.sleep(0.02)
 
 if __name__ == "__main__":
     main()
