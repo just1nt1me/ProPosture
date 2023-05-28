@@ -8,3 +8,4 @@ raw_data/
 .python-version
 .ipynb_checkpoints
 requirements_hippo.txt
+*.pyc
