@@ -3,7 +3,6 @@ streamlit
 streamlit_webrtc
 av
 numpy
-copy
 fastapi
 math
 argparse
