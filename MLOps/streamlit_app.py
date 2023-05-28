@@ -69,7 +69,6 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
 
         image = frame.to_ndarray(format="bgr24")
 
-        image = cv2.flip(image, 1)
         debug_image01 = copy.deepcopy(image)
 
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -129,11 +128,6 @@ def main():
             if not ret:
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
-            # new_image = preprocess_image(frame, 480, 640)
-            # print(new_image.shape)
-            # new_image = np.reshape(new_image,(854,480, 3))
-            # processed_image = draw_landmarks(new_image)
-            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             stframe.image(draw_landmarks(frame))
             time.sleep(0.02)
 
