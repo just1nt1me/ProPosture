@@ -6,7 +6,7 @@ numpy
 fastapi
 twilio
 mediapipe
-opencv-python-headless
+opencv-python-headless>=3.4.2
 # ipykernel
 # ipdb
 # matplotlib
