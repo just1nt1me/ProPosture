@@ -23,10 +23,13 @@ _SENTINEL_ = "_SENTINEL_"
 
 def pose_process(
     in_queue: Queue,
-    out_queue: Queue
+    out_queue: Queue,
+    model_complexity=0,
 ):
     mp_pose = mp.solutions.pose
-    pose = mp_pose.Pose()
+    pose = mp_pose.Pose(
+        model_complexity=model_complexity
+    )
 
     while True:
         input_item = in_queue.get(timeout=10)
@@ -46,13 +49,14 @@ def pose_process(
 
 
 class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
-    def __init__(self, video_settings=None) -> None:
+    def __init__(self, video_settings=None, model_complexity=0) -> None:
         self._in_queue = Queue()
         self._out_queue = Queue()
         self.video_settings=video_settings
         self._pose_process = Process(target=pose_process, kwargs={
             "in_queue": self._in_queue,
             "out_queue": self._out_queue,
+            "model_complexity": model_complexity,
         })
 
         self._pose_process.start()
@@ -70,7 +74,7 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
         image = frame.to_ndarray(format="bgr24")
 
         image = cv2.flip(image, 1)
-        debug_image01 = copy.deepcopy(image)
+        debug_image01 = image
 
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         results = self._infer_pose(image)
@@ -91,11 +95,13 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
 
 def main():
     with st.expander("If you want to film yourself from the front"):
+        model_complexity = st.radio("Model complexity", [0, 1, 2], index=0)
 
         video_settings = st.radio("Settings", ['None', 'Show', 'Curl Counter'])
 
         def processor_factory():
-            return Tokyo2020PictogramVideoProcessor(video_settings=video_settings)
+            return Tokyo2020PictogramVideoProcessor(video_settings=video_settings,
+                                                    model_complexity=model_complexity)
 
         webrtc_ctx = webrtc_streamer(
             key="tokyo2020-Pictogram",
