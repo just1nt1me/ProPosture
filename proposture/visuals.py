@@ -1,8 +1,8 @@
 '''This file outputs advice based on metrics.py'''
 import cv2
 import numpy as np
-from metrics import get_reps_and_stage
-from utils import get_landmarks, get_video_dimensions
+from proposture.metrics import get_reps_and_stage
+from proposture.utils import get_landmarks, get_video_dimensions
 
 # Variables
 # width, height = get_video_dimensions

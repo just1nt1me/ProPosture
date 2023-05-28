@@ -6,6 +6,9 @@ import mediapipe as mp
 import os
 import time
 import tensorflow as tf
+from proposture.utils import load_video, get_angles, get_landmarks, get_video_dimensions, get_sideview
+from proposture.visuals import show_status, show_neck
+from proposture.metrics import get_reps_and_stage, get_neck
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
@@ -159,45 +162,75 @@ def draw_landmarks(
                                                       color=(245, 66, 230), thickness=2, circle_radius=2)
                                                   )
             return image
-        if video_settings == 'Curl Counter':
-            counter = 0
-            stage = None
-            shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
-            elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
-            wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y]
-            angle = calculate_angle(shoulder, elbow, wrist)
-            cv.putText(image, str(angle),
-                            tuple(np.multiply(elbow, [640, 480]).astype(int)),
-                            cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2, cv.LINE_AA
-                                    )
-            if angle > 160:
-                stage = "down"
-            if angle < 30 and stage =='down':
-                stage="up"
-                counter +=1
-                print(counter)
-            cv.rectangle(image, (0,0), (225,73), (245,117,16), -1)
+        if video_settings == 'Pushups aide':
+            view = 'side'
+            advice_list = []
+            # Recolor back to BGR
+            image.flags.writeable = True
+            image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
 
-            # Rep data
-            cv.putText(image, 'REPS', (15,12),
-                        cv.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0), 1, cv.LINE_AA)
-            cv.putText(image, str(counter),
-                        (10,60),
-                        cv.FONT_HERSHEY_SIMPLEX, 2, (255,255,255), 2, cv.LINE_AA)
+            # Get coordinates for joints
+            landmarks = get_landmarks(results)
 
-            # Stage data
-            cv.putText(image, 'STAGE', (65,12),
-                        cv.FONT_HERSHEY_SIMPLEX, 0.5, (0,0,0), 1, cv.LINE_AA)
-            cv.putText(image, stage,
-                        (60,60),
-                        cv.FONT_HERSHEY_SIMPLEX, 2, (255,255,255), 2, cv.LINE_AA)
+            #if sideview, get sideview angle
+            if view == 'side':
+                sideview_angle = get_sideview(*landmarks)
 
+            # Calculate angles of joints
+            angles = get_angles(*landmarks)
+            # Name joint angle variables
+            elbow_angles = angles[:2]
+            neck_angles = angles[2:4]
+            wrist_angles = angles[4:6]
+            shoulder_angles = angles[6:8]
+            hip_angles = angles[8:10]
+            knee_angles = angles[10:12]
 
-            # Render detections
-            mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
-                                    mp_drawing.DrawingSpec(color=(245,117,66), thickness=2, circle_radius=2),
-                                    mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2)
-                                    )
+            #get status box
+            reps_stage = get_reps_and_stage(elbow_angles, rep_counter, stage)
+            show_status(image, *reps_stage)
+            #update stage and rep_counter for next loop
+            stage = reps_stage[0]
+            rep_counter = reps_stage[1]
+
+            #get status and advice
+            # TODO: based on view, implement different get_metrics function
+            if view == 'side':
+                neck = get_neck(neck_angles, sideview_angle)
+
+            # TODO: based on view, implement different get_metrics function
+            # if view == 'front':
+
+            # Visualize status on joints
+            neck_status = show_neck(image, neck, sideview_angle, image_height, image_width, *landmarks)
+            neck_status
+            if not (neck[1] in advice_list):
+                    advice_list.append(neck[1])
+
+            # Display advice text
+            if len(advice_list) >0:
+                cv.rectangle(image, (0, 80), (400,150), (36, 237, 227), -1)
+                # advice text
+                cv.putText(image, "ADVICE:", (15,100),
+                        cv.FONT_HERSHEY_DUPLEX, .5, (0,0,0), 1, cv.LINE_AA)
+                cv.putText(image, advice_list[0], (15,130),
+                        cv.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv.LINE_AA)
+                if len(advice_list)>1:
+                    cv.rectangle(image, (0, 150), (400,180), (36, 237, 227), -1)
+                    cv.putText(image, advice_list[1], (15,170),
+                            cv.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv.LINE_AA)
+                    if len(advice_list)>2:
+                        cv.putText(image, advice_list[2], (15,190),
+                                cv.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv.LINE_AA)
+
+            #Render detections
+            mp.solutions.drawing_utils.draw_landmarks(image, results.pose_landmarks,
+                                                  mp.solutions.pose.POSE_CONNECTIONS,
+                                                  mp.solutions.drawing_utils.DrawingSpec(
+                                                      color=(245, 117, 66), thickness=2, circle_radius=2),
+                                                  mp.solutions.drawing_utils.DrawingSpec(
+                                                      color=(245, 66, 230), thickness=2, circle_radius=2)
+                                                  )
             return image
     return image
 

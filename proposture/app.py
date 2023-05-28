@@ -5,10 +5,10 @@ import os
 import mediapipe as mp
 
 #import modules
-from utils import load_video, get_angles, get_landmarks, get_video_dimensions, get_sideview
-from visuals import show_status
-from metrics import get_reps_and_stage, get_neck
-from visuals import show_neck
+from proposture.utils import load_video, get_angles, get_landmarks, get_video_dimensions, get_sideview
+from proposture.visuals import show_status
+from proposture.metrics import get_reps_and_stage, get_neck
+from proposture.visuals import show_neck
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
