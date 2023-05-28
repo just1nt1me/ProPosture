@@ -136,11 +136,12 @@ def main():
 
 def draw_landmarks(
     image,
-    landmarks,
+    landmarks='Show',
     # upper_body_only,
     visibility_th=0.5,
-    video_settings=None
+    video_settings='Show'
 ):
+    print(image.shape)
     image_width, image_height = image.shape[1], image.shape[0]
     with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
 
@@ -209,7 +210,7 @@ def load_image(path : str):
         image = tf.cast(tf.image.resize_with_pad(image, 160, 256), dtype=tf.int32)
         return image
 
-def preprocess_image(image, new_width, new_height, path:None):
+def preprocess_image(image, new_width, new_height):
     """
     take an frame of a video converted to an image through opencv,
     wth the new_width and new height  for reshaping purpose.
@@ -218,15 +219,11 @@ def preprocess_image(image, new_width, new_height, path:None):
     - (720p: 854px by 480px)
     - (1080p: 854px by 480px)
     """
-    if path != None:
-        image = load_image(path)
-    else:
-        image = cv.resize(image, (new_width, new_height))
     start = time.time()
     # Resize to the target shape and cast to an int32 vector
     input_image = tf.cast(tf.image.resize_with_pad(image, new_width, new_height), dtype=tf.int32)
     # Create a batch (input tensor)
-    input_image = tf.expand_dims(input_image, axis=0)
+    # input_image = tf.expand_dims(input_image, axis=0)
 
     print(input_image.shape)
     return input_image
