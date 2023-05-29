@@ -7,8 +7,8 @@ import os
 import time
 import tensorflow as tf
 from proposture.utils import load_video, get_angles, get_landmarks, get_video_dimensions, get_sideview
-from proposture.visuals import show_status, show_neck
-from proposture.metrics import get_reps_and_stage, get_neck
+from proposture.metrics import get_reps_and_stage, get_rep_advice, get_neck, get_hip, get_knee, get_hand, get_hand_align, get_shoulder_elbow_dist
+from proposture.visuals import show_neck, show_hip, show_knee, show_hand, show_align, show_elbow, show_status
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
@@ -142,7 +142,8 @@ def draw_landmarks(
     landmarks='Show',
     # upper_body_only,
     visibility_th=0.5,
-    video_settings='None'
+    video_settings='None',
+    view='side'
 ):
     image_width, image_height = image.shape[1], image.shape[0]
     with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
@@ -163,65 +164,98 @@ def draw_landmarks(
                                                   )
             return image
         if video_settings == 'Pushups aide':
-            view = 'side'
             advice_list = []
-            # Recolor back to BGR
-            image.flags.writeable = True
-            image = cv.cvtColor(image, cv.COLOR_RGB2BGR)
-
-            # Get coordinates for joints
             landmarks = get_landmarks(results)
 
             #if sideview, get sideview angle
             if view == 'side':
                 sideview_angle = get_sideview(*landmarks)
+            if view == 'front':
+                sideview_angle = None
 
             # Calculate angles of joints
             angles = get_angles(*landmarks)
+
             # Name joint angle variables
             elbow_angles = angles[:2]
             neck_angles = angles[2:4]
             wrist_angles = angles[4:6]
             shoulder_angles = angles[6:8]
+            shoulder_distance = angles[12:14]
+            shoulder_elbow_distance = angles[14:16]
             hip_angles = angles[8:10]
             knee_angles = angles[10:12]
 
             #get status box
             reps_stage = get_reps_and_stage(elbow_angles, rep_counter, stage)
-            show_status(image, *reps_stage)
-            #update stage and rep_counter for next loop
+            rep_advice = get_rep_advice(elbow_angles, sideview_angle)
+            show_status(image, rep_advice, *reps_stage)
+
+            #update rep_advice, stage, rep_counter for next loop
+            rep_advice = rep_advice
             stage = reps_stage[0]
             rep_counter = reps_stage[1]
 
-            #get status and advice
             # TODO: based on view, implement different get_metrics function
+            if view == 'front':
+                align = get_hand_align(shoulder_distance, elbow_angles)
+                elbow = get_shoulder_elbow_dist(shoulder_elbow_distance, elbow_angles)
+
+                # Visualize status on joints
+                align_status = show_align(image, align, image_height, image_width, *landmarks)
+                align_status
+                if not (align[1] in advice_list):
+                    advice_list.append(align[1])
+
+                elbow_status = show_elbow(image, elbow, image_height, image_width, *landmarks)
+                elbow_status
+                if not (elbow[1] in advice_list):
+                    advice_list.append(elbow[1])
+
+            #get status and advice
             if view == 'side':
                 neck = get_neck(neck_angles, sideview_angle)
+                hand = get_hand(shoulder_distance, wrist_angles, sideview_angle)
+                hip = get_hip(hip_angles, sideview_angle)
+                knee = get_knee(knee_angles, sideview_angle)
 
-            # TODO: based on view, implement different get_metrics function
-            # if view == 'front':
-
-            # Visualize status on joints
-            neck_status = show_neck(image, neck, sideview_angle, image_height, image_width, *landmarks)
-            neck_status
-            if not (neck[1] in advice_list):
+                # Visualize status on joints
+                neck_status = show_neck(image, neck, sideview_angle, image_height, image_width, *landmarks)
+                neck_status
+                if not (neck[1] in advice_list):
                     advice_list.append(neck[1])
 
+                hand_status = show_hand(image, hand, sideview_angle, image_height, image_width, *landmarks)
+                hand_status
+                if not (hand[1] in advice_list):
+                    advice_list.append(hand[1])
+
+                hip_status = show_hip(image, hip, sideview_angle, image_height, image_width, *landmarks)
+                hip_status
+                if not (hip[1] in advice_list):
+                    advice_list.append(hip[1])
+
+                knee_status = show_knee(image, knee, sideview_angle, image_height, image_width, *landmarks)
+                knee_status
+                if not (knee[1] in advice_list):
+                    advice_list.append(knee[1])
+
             # Display advice text
-            if len(advice_list) >0:
-                cv.rectangle(image, (0, 80), (400,150), (36, 237, 227), -1)
-                # advice text
-                cv.putText(image, "ADVICE:", (15,100),
-                        cv.FONT_HERSHEY_DUPLEX, .5, (0,0,0), 1, cv.LINE_AA)
-                cv.putText(image, advice_list[0], (15,130),
-                        cv.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv.LINE_AA)
-                if len(advice_list)>1:
-                    cv.rectangle(image, (0, 150), (400,180), (36, 237, 227), -1)
-                    cv.putText(image, advice_list[1], (15,170),
-                            cv.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv.LINE_AA)
-                    if len(advice_list)>2:
-                        cv.putText(image, advice_list[2], (15,190),
-                                cv.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv.LINE_AA)
+            if len(advice_list) > 0:
+                cv.rectangle(image, (0, 80), (400, 120), (36, 237, 227), -1)
+                cv.putText(image, "POSTURE ADVICE:", (15, 100),
+                            cv.FONT_HERSHEY_DUPLEX, 0.5, (0, 0, 0), 1, cv.LINE_AA)
+
+                for i, advice in enumerate(advice_list):
+                    rectangle_y = 120 + i * 30  # Adjust the y-coordinate of the rectangle based on the index
+                    text_y = 130 + i * 30  # Adjust the y-coordinate of the text based on the index
+
+                    cv.rectangle(image, (0, rectangle_y), (400, rectangle_y + 30), (36, 237, 227), -1)
+                    cv.putText(image, advice, (15, text_y),
+                                cv.FONT_HERSHEY_DUPLEX, 0.7, (0, 0, 0), 1, cv.LINE_AA)
+
+
+
 
             #Render detections
             mp.solutions.drawing_utils.draw_landmarks(image, results.pose_landmarks,
@@ -231,6 +265,7 @@ def draw_landmarks(
                                                   mp.solutions.drawing_utils.DrawingSpec(
                                                       color=(245, 66, 230), thickness=2, circle_radius=2)
                                                   )
+
             return image
     return image
 
