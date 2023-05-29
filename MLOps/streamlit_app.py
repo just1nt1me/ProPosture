@@ -10,7 +10,7 @@ import cv2 as cv
 import numpy as np
 import mediapipe as mp
 
-from main import draw_landmarks, preprocess_image
+from main import draw_landmarks, preprocess_image, load_image
 
 from fake_objects import FakeResultObject, FakeLandmarksObject, FakeLandmarkObject
 
@@ -115,8 +115,27 @@ def main():
 
     if uploaded_file is not None:
         # Save the video file to a temporary location
-        processed_video = preprocess_image(uploaded_file, 854, 480)
-        st.video(processed_video)
+        # string_data = video_path.read()
+        tfile = tempfile.NamedTemporaryFile(delete=False)
+        tfile.write(uploaded_file.read())
+
+
+        vf = cv.VideoCapture(tfile.name)
+
+        stframe = st.empty()
+
+        while vf.isOpened():
+            ret, frame = vf.read()
+            # if frame is read correctly ret is True
+            if not ret:
+                print("Can't receive frame (stream end?). Exiting ...")
+                break
+            gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+            stframe.image(gray)
+        # user_video = load_image(tfile)
+        # vf = cv.VideoCapture(user_video)
+        # processed_video = preprocess_image(vf, 854, 480)
+        # st.video(processed_video)
 
 
 if __name__ == "__main__":

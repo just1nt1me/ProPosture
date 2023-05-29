@@ -7,8 +7,8 @@ import mediapipe as mp
 #import modules
 from utils import load_video, get_angles, get_landmarks, get_video_dimensions, get_sideview
 from visuals import show_status
-from metrics import get_reps_and_stage, get_neck
-from visuals import show_neck
+from metrics import get_reps_and_stage, get_neck, get_hip, get_knee, get_hand
+from visuals import show_neck, show_hip, show_knee, show_hand
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
@@ -57,12 +57,14 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START'):
             neck_angles = angles[2:4]
             wrist_angles = angles[4:6]
             shoulder_angles = angles[6:8]
+            shoulder_distance = angles[12:14]
             hip_angles = angles[8:10]
             knee_angles = angles[10:12]
 
             #get status box
             reps_stage = get_reps_and_stage(elbow_angles, rep_counter, stage)
             show_status(image, *reps_stage)
+
             #update stage and rep_counter for next loop
             stage = reps_stage[0]
             rep_counter = reps_stage[1]
@@ -71,6 +73,9 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START'):
             # TODO: based on view, implement different get_metrics function
             if view == 'side':
                 neck = get_neck(neck_angles, sideview_angle)
+                hand = get_hand(shoulder_distance, wrist_angles, sideview_angle)
+                hip = get_hip(hip_angles, sideview_angle)
+                knee = get_knee(knee_angles, sideview_angle)
 
             # TODO: based on view, implement different get_metrics function
             # if view == 'front':
@@ -79,23 +84,39 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START'):
             neck_status = show_neck(image, neck, sideview_angle, height, width, *landmarks)
             neck_status
             if not (neck[1] in advice_list):
-                    advice_list.append(neck[1])
+                advice_list.append(neck[1])
+
+            hand_status = show_hand(image, hand, sideview_angle, height, width, *landmarks)
+            hand_status
+            if not (hand[1] in advice_list):
+                advice_list.append(hand[1])
+
+            hip_status = show_hip(image, hip, sideview_angle, height, width, *landmarks)
+            hip_status
+            if not (hip[1] in advice_list):
+                advice_list.append(hip[1])
+
+            knee_status = show_knee(image, knee, sideview_angle, height, width, *landmarks)
+            knee_status
+            if not (knee[1] in advice_list):
+                advice_list.append(knee[1])
 
             # Display advice text
-            if len(advice_list) >0:
-                cv2.rectangle(image, (0, 80), (400,150), (36, 237, 227), -1)
-                # advice text
-                cv2.putText(image, "ADVICE:", (15,100),
-                        cv2.FONT_HERSHEY_DUPLEX, .5, (0,0,0), 1, cv2.LINE_AA)
-                cv2.putText(image, advice_list[0], (15,130),
-                        cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
-                if len(advice_list)>1:
-                    cv2.rectangle(image, (0, 150), (400,180), (36, 237, 227), -1)
-                    cv2.putText(image, advice_list[1], (15,170),
-                            cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
-                    if len(advice_list)>2:
-                        cv2.putText(image, advice_list[2], (15,190),
-                                cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0), 2, cv2.LINE_AA)
+            if len(advice_list) > 0:
+                cv2.rectangle(image, (0, 80), (400, 120), (36, 237, 227), -1)
+                cv2.putText(image, "ADVICE:", (15, 100),
+                            cv2.FONT_HERSHEY_DUPLEX, 0.5, (0, 0, 0), 1, cv2.LINE_AA)
+
+                for i, advice in enumerate(advice_list):
+                    rectangle_y = 120 + i * 30  # Adjust the y-coordinate of the rectangle based on the index
+                    text_y = 130 + i * 30  # Adjust the y-coordinate of the text based on the index
+
+                    cv2.rectangle(image, (0, rectangle_y), (400, rectangle_y + 30), (36, 237, 227), -1)
+                    cv2.putText(image, advice, (15, text_y),
+                                cv2.FONT_HERSHEY_DUPLEX, 0.7, (0, 0, 0), 1, cv2.LINE_AA)
+
+
+
 
             #Render detections
             mp.solutions.drawing_utils.draw_landmarks(image, results.pose_landmarks,
@@ -122,4 +143,4 @@ if __name__ == "__main__":
     # video_file_path = "../media/full_pushup.mp4"
     # cap = load_video(video_file_path)
     # height, width = get_video_dimensions(cap)
-    main(cap, height, width, view= 'side')
+    main(cap, height, width, view = 'side')
