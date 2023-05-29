@@ -3,9 +3,6 @@ import cv2
 import numpy as np
 import mediapipe as mp
 
-# What video are we using?
-video_file_path = "../media/full_pushup.mp4"
-
 # Load video
 def load_video(video_file_path):
     cap = cv2.VideoCapture(video_file_path)
