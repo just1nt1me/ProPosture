@@ -53,11 +53,33 @@ def show_neck(image, neck, sideview_angle, height, width, *landmarks):
                         20, neck[0], -1)
     return neck_status
 
-# TODO: HIP
+def show_hip(image, hip, sideview_angle, height, width, *landmarks):
+    if sideview_angle == 'left':
+        hip_status = cv2.circle(image, tuple(np.multiply(landmarks[3], [width, height]).astype(int)),
+                        20, hip[0], -1)
+    if sideview_angle == 'right':
+        hip_status = cv2.circle(image, tuple(np.multiply(landmarks[10], [width, height]).astype(int)),
+                        20, hip[0], -1)
+    return hip_status
 
-# TODO: KNEES
+def show_knee(image, knee, sideview_angle, height, width, *landmarks):
+    if sideview_angle == 'left':
+        knee_status = cv2.circle(image, tuple(np.multiply(landmarks[6], [width, height]).astype(int)),
+                        20, knee[0], -1)
+    if sideview_angle == 'right':
+        knee_status = cv2.circle(image, tuple(np.multiply(landmarks[13], [width, height]).astype(int)),
+                        20, knee[0], -1)
+    return knee_status
 
-# TODO: SHOULDER/WRIST ALIGNMENT
+def show_hand(image, hand, sideview_angle, height, width, *landmarks):
+    if sideview_angle == 'left':
+        hand_status = cv2.circle(image, tuple(np.multiply(landmarks[2], [width, height]).astype(int)),
+                        20, hand[0], -1)
+    if sideview_angle == 'right':
+        hand_status = cv2.circle(image, tuple(np.multiply(landmarks[9], [width, height]).astype(int)),
+                        20, hand[0], -1)
+    return hand_status
+
 
 # Get advice
 # def get_advice(image, advice_list):

@@ -88,6 +88,9 @@ def get_angles(l_shoulder, l_elbow, l_wrist, l_hip, l_ankle, l_ear, l_knee, r_sh
     # Shoulders
     left_shoulder_angle = calculate_angle(l_hip, l_shoulder, l_elbow)
     right_shoulder_angle = calculate_angle(r_hip, r_shoulder, r_elbow)
+    # Shoulder Distance
+    left_x_distance = round(abs(l_wrist[0]-l_shoulder[0]),4)
+    right_x_distance = round(abs(r_wrist[0]-r_shoulder[0]),4)
     # Hips
     left_hip_angle = calculate_angle(l_shoulder, l_hip, l_ankle)
     right_hip_angle = calculate_angle(r_shoulder, r_hip, r_ankle)
@@ -95,4 +98,4 @@ def get_angles(l_shoulder, l_elbow, l_wrist, l_hip, l_ankle, l_ear, l_knee, r_sh
     left_knee_angle = calculate_angle(l_hip, l_knee,l_ankle)
     right_knee_angle = calculate_angle(r_hip, r_knee, r_ankle)
 
-    return left_elbow_angle, right_elbow_angle, left_neck_angle, right_neck_angle, wrist_l_shoulder_angle, wrist_r_shoulder_angle, left_shoulder_angle, right_shoulder_angle, left_hip_angle, right_hip_angle, left_knee_angle, right_knee_angle
+    return left_elbow_angle, right_elbow_angle, left_neck_angle, right_neck_angle, wrist_l_shoulder_angle, wrist_r_shoulder_angle, left_shoulder_angle, right_shoulder_angle, left_hip_angle, right_hip_angle, left_knee_angle, right_knee_angle, left_x_distance, right_x_distance
