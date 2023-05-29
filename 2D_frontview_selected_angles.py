@@ -31,6 +31,8 @@ cap = cv2.VideoCapture(path)
 stage = None
 quality = None
 counter = 0
+full_rep_counter = 0
+elbow_angle_list=[]
 
 # Setup mediapipe instance
 with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
@@ -88,6 +90,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             cv2.putText(image, str(f'Elbows angle: {average_elbow_angle}'),
                            average_elbow_text_position,
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+            elbow_angle_list.append(average_elbow_angle)
 
 
             ##2.2 COMPUTE X-DISTANCE BETWEEN SHOULDER AND WRIST
@@ -133,6 +136,14 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             # cv2.putText(image, str(f'Rep stage: {stage}'),
             #             rep_stage_text_position,
             #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
+            if average_elbow_angle > 175 and full_rep_stage =='down':
+                full_rep_counter +=1
+            if average_elbow_angle > 175:
+                full_rep_stage = "up"
+            if average_elbow_angle < 90:
+                full_rep_stage="down"
+
 
             ##3.2 FULL REP VERIFIER
             if average_elbow_angle in range(170,180):
@@ -210,3 +221,16 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
     #CLOSING DISPLAY WINDOW
     cap.release()
     cv2.destroyAllWindows()
+
+
+# maximas = []
+# minimas = []
+# Check each number in the list
+# for i in range(2, len(elbow_angle_list) - 2):
+#     if elbow_angle_list[i] > elbow_angle_list[i-2] and elbow_angle_list[i] > elbow_angle_list[i+2]:
+#         maximas.append(elbow_angle_list[i])
+#     if elbow_angle_list[i] < elbow_angle_list[i-2] and elbow_angle_list[i] < elbow_angle_list[i+2]:
+#         minimas.append(elbow_angle_list[i])
+
+print(counter)
+print(full_rep_counter)
