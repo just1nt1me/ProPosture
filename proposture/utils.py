@@ -2,11 +2,9 @@
 import cv2
 import numpy as np
 import mediapipe as mp
-import os
 
 # What video are we using?
-video_file_path2 = os.path.join(os.path.dirname(os.getcwd()),"ProPosture","raw_data","hip_test_pushup.mp4")
-video_file_path = "../raw_data/hip_test_pushup.mp4"
+video_file_path = "../media/full_pushup.mp4"
 
 # Load video
 def load_video(video_file_path):
