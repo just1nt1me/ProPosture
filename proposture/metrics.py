@@ -56,6 +56,19 @@ def get_hand_align(shoulder_distance, elbow_angles, align_status_color = None, a
             advice_align_hands = 'Hands too wide!'
     return align_status_color, advice_align_hands
 
+def get_shoulder_elbow_dist(shoulder_elbow_distance, elbow_angles, elbow_status_color = None, advice_elbows = None):
+    shoulders_x_distance, elbows_x_distance = shoulder_elbow_distance
+    shoulder_elbow_ratio = round(elbows_x_distance/shoulders_x_distance,3)
+    left_elbow_angle, right_elbow_angle = elbow_angles
+    average_elbow_angle = (left_elbow_angle+right_elbow_angle)/2
+    if average_elbow_angle < 75:
+        if shoulder_elbow_ratio < 2:
+            elbow_status_color = (31, 194, 53)
+        if shoulder_elbow_ratio > 2:
+            elbow_status_color = (14, 14, 232)
+            advice_elbows = "Tuck elbows in"
+    return elbow_status_color, advice_elbows
+
 # SIDE VIEW CONDITIONS
 # NECK conditional statements
 def get_neck(neck_angles, sideview_angle, advice_neck = None):

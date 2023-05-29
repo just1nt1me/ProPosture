@@ -1,14 +1,12 @@
 #import libraries
 import cv2
-import numpy as np
-import os
 import mediapipe as mp
 
 #import modules
 from utils import load_video, get_angles, get_landmarks, get_video_dimensions, get_sideview
 from visuals import show_status
-from metrics import get_reps_and_stage, get_rep_advice, get_neck, get_hip, get_knee, get_hand, get_hand_align
-from visuals import show_neck, show_hip, show_knee, show_hand, show_align
+from metrics import get_reps_and_stage, get_rep_advice, get_neck, get_hip, get_knee, get_hand, get_hand_align, get_shoulder_elbow_dist
+from visuals import show_neck, show_hip, show_knee, show_hand, show_align, show_elbow
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
@@ -52,12 +50,14 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START'):
 
             # Calculate angles of joints
             angles = get_angles(*landmarks)
+
             # Name joint angle variables
             elbow_angles = angles[:2]
             neck_angles = angles[2:4]
             wrist_angles = angles[4:6]
             shoulder_angles = angles[6:8]
             shoulder_distance = angles[12:14]
+            shoulder_elbow_distance = angles[14:16]
             hip_angles = angles[8:10]
             knee_angles = angles[10:12]
 
@@ -74,12 +74,18 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START'):
             # TODO: based on view, implement different get_metrics function
             if view == 'front':
                 align = get_hand_align(shoulder_distance, elbow_angles)
+                elbow = get_shoulder_elbow_dist(shoulder_elbow_distance, elbow_angles)
 
                 # Visualize status on joints
                 align_status = show_align(image, align, height, width, *landmarks)
                 align_status
                 if not (align[1] in advice_list):
                     advice_list.append(align[1])
+
+                elbow_status = show_elbow(image, elbow, height, width, *landmarks)
+                elbow_status
+                if not (elbow[1] in advice_list):
+                    advice_list.append(elbow[1])
 
             #get status and advice
             if view == 'side':

@@ -22,8 +22,8 @@ def show_status(image, rep_advice, stage, rep_counter):
     #             (60,70),
     #             cv2.FONT_HERSHEY_SIMPLEX, 2, (255,255,255), 3, cv2.LINE_AA)
 
-    #Rep Advice data
-    stage_title = cv2.putText(image, 'REP ADVICE', (75,12),
+    #Rep Status Data
+    stage_title = cv2.putText(image, 'REP STATUS', (75,12),
                 cv2.FONT_HERSHEY_DUPLEX, 0.5, (0,0,0), 1, cv2.LINE_AA)
     stage_text = cv2.putText(image, rep_advice, (60,70),
                 cv2.FONT_HERSHEY_SIMPLEX, 2, (255,255,255), 2, cv2.LINE_AA)
@@ -73,3 +73,10 @@ def show_align(image, align, height, width, *landmarks):
     right_align_status = cv2.circle(image, tuple(np.multiply(landmarks[9], [width, height]).astype(int)),
                     20, align[0], -1)
     return left_align_status, right_align_status
+
+def show_elbow(image, elbow, height, width, *landmarks):
+    left_elbow_status = cv2.circle(image, tuple(np.multiply(landmarks[1], [width, height]).astype(int)),
+                    20, elbow[0], -1)
+    right_elbow_status = cv2.circle(image, tuple(np.multiply(landmarks[8], [width, height]).astype(int)),
+                    20, elbow[0], -1)
+    return left_elbow_status, right_elbow_status
