@@ -1,9 +1,5 @@
 '''This file takes the angles from data.py and outputs conditions for visuals.py'''
 
-# variables for get_reps_and_stage
-# stage = 'START' #default is start > DOWN, UP for reps
-# rep_counter = 0 # counts number of reps
-
 # Rep Counter and Up/Down Stage
 def get_reps_and_stage(elbow_angles, rep_counter, stage):
     left_elbow_angle, right_elbow_angle = elbow_angles
@@ -14,6 +10,53 @@ def get_reps_and_stage(elbow_angles, rep_counter, stage):
         rep_counter +=1
     return stage, rep_counter
 
+# Full Rep Verifier
+def get_rep_advice(elbow_angles, sideview_angle = None, rep_advice = None):
+    left_elbow_angle, right_elbow_angle = elbow_angles
+    average_elbow_angle=(left_elbow_angle+right_elbow_angle)/2
+    if sideview_angle == None:
+        if average_elbow_angle > 170:
+                rep_advice = "GOOD! GO DOWN!"
+        if average_elbow_angle < 90:
+            rep_advice="GOOD! PUSH UP!"
+    if sideview_angle=="left":
+        #1st rep counter
+        if left_elbow_angle in range(160,180):
+            rep_advice = "GO DOWN!"
+        if left_elbow_angle < 140:
+            rep_advice = "KEEP GOING!"
+        if left_elbow_angle < 110:
+            rep_advice="LOWER.."
+        if left_elbow_angle < 90:
+            rep_advice="GOOD! GO UP!"
+    if sideview_angle=="right":
+        #1st rep counter
+        if right_elbow_angle in range(160,180):
+            rep_advice = "GO DOWN!"
+        if right_elbow_angle < 140:
+            rep_advice = "KEEP GOING!"
+        if right_elbow_angle < 110:
+            rep_advice="LOWER.."
+        if right_elbow_angle < 90:
+            rep_advice="GOOD! GO UP!"
+    return rep_advice
+
+# FRONT VIEW CONDITIONS
+# CHECKS HAND-SHOULDER X-AXIS ALIGNMENT AT TOP OF REP
+def get_hand_align(shoulder_distance, elbow_angles, align_status_color = None, advice_align_hands = None):
+    left_x_distance, right_x_distance = shoulder_distance
+    left_elbow_angle, right_elbow_angle = elbow_angles
+    x_distances_mean=round(abs((left_x_distance+right_x_distance)/2),4)
+    average_elbow_angle=(left_elbow_angle+right_elbow_angle)/2
+    if average_elbow_angle>150:
+        if x_distances_mean<=0.075:
+            align_status_color = (31, 194, 53)
+        if x_distances_mean>0.075:
+            align_status_color = (14, 14, 232)
+            advice_align_hands = 'Hands too wide!'
+    return align_status_color, advice_align_hands
+
+# SIDE VIEW CONDITIONS
 # NECK conditional statements
 def get_neck(neck_angles, sideview_angle, advice_neck = None):
     left_neck_angle, right_neck_angle = neck_angles
