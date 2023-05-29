@@ -78,10 +78,10 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             # 2. GETTING USEFUL ANGLES ONE-BY-ONE
 
             ## 2.1 GETTING ELBOW ANGLES --> ALLOW TO CHECK IF FULL REP
-            ### Calculate angles
+            ### Compute angles
             left_elbow_angle = calculate_angle(l_shoulder, l_elbow, l_wrist)
             right_elbow_angle = calculate_angle(r_shoulder, r_elbow, r_wrist)
-            ### Calculate average angle
+            ### Compute average angle
             average_elbow_angle=(left_elbow_angle+right_elbow_angle)/2
             ### Visualise
             average_elbow_text_position = (image.shape[1] - 220, 30)
@@ -91,15 +91,28 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
 
 
             ##2.2 COMPUTE X-DISTANCE BETWEEN SHOULDER AND WRIST
-            ### Calculate angles
+            ### Compute distances
             left_x_distance = round(abs(l_wrist[0]-l_shoulder[0]),4)
             right_x_distance = round(abs(r_wrist[0]-r_shoulder[0]),4)
-            ### Calculate average angle
+            ### Compute average distance
             x_distances_mean=round(abs((left_x_distance+right_x_distance)/2),4)
             ### Visualise
             x_distances_mean_text_position = (image.shape[1] - 220, 70)
             cv2.putText(image, str(f'Wrist-shoulder: {x_distances_mean}'),
                            x_distances_mean_text_position,
+                           cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
+
+            ##2.3 COMPUTE X-DISTANCE BETWEEN BOTH WRISTS/SHOULDERS AND BOTH ELBOWS
+            ### Compute distances
+            shoulders_x_distance = round(abs(l_shoulder[0]-r_shoulder[0]),3)
+            elbows_x_distance = round(abs(l_elbow[0]-r_elbow[0]),3)
+            ### Compute ratio of distances
+            shoulder_elbow_ratio=round(elbows_x_distance/shoulders_x_distance,3)
+            ### Visualise
+            shoulder_elbow_ratio_text_position = (image.shape[1] - 220, 110)
+            cv2.putText(image, str(f'Wrist-shoulder: {shoulder_elbow_ratio}'),
+                           shoulder_elbow_ratio_text_position,
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
 
@@ -141,6 +154,18 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             hands_status_text_position = (30,100)
             cv2.putText(image, str(f'Hands position: {hands_status}'),
                         hands_status_text_position,
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
+            ##3.4 SHOULDERS-ELBOWS RATIO
+            if average_elbow_angle<75:
+                if shoulder_elbow_ratio<2:
+                    elbow_status="Good"
+                if shoulder_elbow_ratio>2:
+                    elbow_status="Bad"
+                    advice_elbows = "Tuck elbows in"
+            elbows_status_text_position = (30, 140)
+            cv2.putText(image, str(f'Elbows position: {elbow_status}'),
+                        elbows_status_text_position,
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
         except:

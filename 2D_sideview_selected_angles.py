@@ -230,17 +230,14 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
                             rep_stage_text_position,
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
+
             ##3.2 FULL REP VERIFIER
             if sideview_angle=="Left":
                 #1st rep counter
-                if left_elbow_angle > 140:
-                    advice = "Push push push u dickhead"
-                if left_elbow_angle in range(160,180):
-                    advice = "Good now u can go down dickhead"
-                if left_elbow_angle < 90:
-                    advice="Lower lower lower u dickhead"
-                if left_elbow_angle in range(0,70):
-                    advice="Good now u can go up dickhead"
+                if left_elbow_angle in range(170,180):
+                    advice = "GOOD JOB U LOSER ! Now down"
+                if left_elbow_angle in range(0,65):
+                    advice="GOOD JOB U LOSER ! Now push up"
                 rep_advice_text_position = (30, 60)
                 cv2.putText(image, str(f'{advice}'),
                             rep_advice_text_position,
@@ -248,18 +245,15 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
 
             if sideview_angle=="Right":
                 #1st rep counter
-                if right_elbow_angle > 140:
-                    advice = "Push push push u dickhead"
-                if right_elbow_angle in range(160,180):
-                    advice = "Good now u can go down dickhead"
-                if right_elbow_angle < 90:
-                    advice="Lower lower lower u dickhead"
-                if right_elbow_angle in range(0,70):
-                    advice="Good now u can go up dickhead"
+                if right_elbow_angle in range(170,180):
+                    advice = "GOOD JOB U LOSER ! Now down"
+                if right_elbow_angle in range(0,65):
+                    advice="GOOD JOB U LOSER ! Now push up"
                 rep_advice_text_position = (30, 60)
                 cv2.putText(image, str(f'{advice}'),
                             rep_advice_text_position,
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
 
             ##3.3 NECK ALIGNMENT
             if sideview_angle=="Left":
