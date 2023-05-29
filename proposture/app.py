@@ -5,13 +5,13 @@ import mediapipe as mp
 #import modules
 from proposture.utils import load_video, get_angles, get_landmarks, get_video_dimensions, get_sideview
 from proposture.metrics import get_reps_and_stage, get_rep_advice, get_neck, get_hip, get_knee, get_hand, get_hand_align, get_shoulder_elbow_dist
-from proposture.visuals import show_neck, show_hip, show_knee, show_hand, show_align, show_elbow
+from proposture.visuals import show_status, show_neck, show_hip, show_knee, show_hand, show_align, show_elbow
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
 #load video
-video_file_path = "../media/frontview_pushupbadgood.mp4"
+video_file_path = "media/frontview_pushupbadgood.mp4"
 cap = load_video(video_file_path)
 height, width = get_video_dimensions(cap)
 advice_list = []
@@ -153,7 +153,4 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START'):
         cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    # video_file_path = "../media/full_pushup.mp4"
-    # cap = load_video(video_file_path)
-    # height, width = get_video_dimensions(cap)
     main(cap, height, width)
