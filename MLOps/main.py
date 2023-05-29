@@ -143,7 +143,9 @@ def draw_landmarks(
     # upper_body_only,
     visibility_th=0.5,
     video_settings='None',
-    view='side'
+    view='side',
+    rep_counter = 0,
+    stage = 'START'
 ):
     image_width, image_height = image.shape[1], image.shape[0]
     with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:

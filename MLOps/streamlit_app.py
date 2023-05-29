@@ -135,7 +135,7 @@ def main():
             if not ret:
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
-            stframe.image(draw_landmarks(frame, video_settings='Pushups aide'), view='side')
+            stframe.image(draw_landmarks(frame, video_settings='Pushups aide', view='side'))
             time.sleep(0.02)
 
 if __name__ == "__main__":
