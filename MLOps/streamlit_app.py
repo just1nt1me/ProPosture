@@ -136,7 +136,7 @@ def streamlit():
             if not ret:
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
-            stframe.image(draw_landmarks(frame, video_settings='Pushups aide', view='side', rep_counter = ))
+            stframe.image(draw_landmarks(frame, video_settings='Pushups aide', view='side', rep_counter = 0, stage='Start'))
 
 if __name__ == "__main__":
     streamlit()
