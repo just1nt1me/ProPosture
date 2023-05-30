@@ -130,13 +130,12 @@ def main():
         stframe = st.empty()
         while vf.isOpened():
             ret, frame = vf.read()
-            # results = Tokyo2020PictogramVideoProcessor._infer_pose(_, frame)
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             # if frame is read correctly ret is True
             if not ret:
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
             stframe.image(draw_landmarks(frame, video_settings='Pushups aide', view='side'))
-            time.sleep(0.02)
 
 if __name__ == "__main__":
     main()
