@@ -58,12 +58,6 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
             "model_complexity": model_complexity,
         })
         self._pose_process.start()
-        self.rep_counter=None
-        self.stage=None
-        if self.rep_counter is None:
-            self.rep_counter=0
-        if self.stage is None:
-            self.stage = 'START'
 
     def _infer_pose(self, image):
         self._in_queue.put_nowait(image)
@@ -83,7 +77,7 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         results = self._infer_pose(image)
         if results.pose_landmarks is not None:
-            debug_image01, self.rep_counter, self.stage = draw_landmarks(
+            debug_image01 = draw_landmarks(
                 debug_image01,
                 results.pose_landmarks,
                 video_settings=self.video_settings,
@@ -129,7 +123,6 @@ def streamlit():
         tfile = tempfile.NamedTemporaryFile(delete=False)
         tfile.write(uploaded_file.read())
         vf = cv2.VideoCapture(tfile.name)
-        rep_counter = 0.5
         stframe = st.empty()
         while vf.isOpened():
             ret, frame = vf.read()
