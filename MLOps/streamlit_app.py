@@ -11,7 +11,7 @@ import cv2
 import numpy as np
 import mediapipe as mp
 
-from main import draw_landmarks, preprocess_image, load_image
+from main import draw_landmarks
 
 from fake_objects import FakeResultObject, FakeLandmarksObject, FakeLandmarkObject
 
@@ -83,7 +83,7 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
             debug_image01 = draw_landmarks(
                 debug_image01,
                 results.pose_landmarks,
-                video_settings=self.video_settings
+                video_settings=self.video_settings,
             )
         return av.VideoFrame.from_ndarray(debug_image01, format="bgr24")
 
@@ -97,7 +97,7 @@ def main():
     with st.expander("If you want to film yourself from the front"):
         model_complexity = st.radio("Model complexity", [0, 1, 2], index=0)
 
-        video_settings = st.radio("Settings", ['None', 'Show', 'Pushups aide'])
+        video_settings = st.radio("Settings", ['None', 'Show', 'Display model'])
 
         def processor_factory():
             return Tokyo2020PictogramVideoProcessor(video_settings=video_settings,
@@ -130,13 +130,12 @@ def main():
         stframe = st.empty()
         while vf.isOpened():
             ret, frame = vf.read()
-            # results = Tokyo2020PictogramVideoProcessor._infer_pose(_, frame)
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             # if frame is read correctly ret is True
             if not ret:
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
             stframe.image(draw_landmarks(frame, video_settings='Pushups aide', view='side'))
-            time.sleep(0.02)
 
 if __name__ == "__main__":
     main()
