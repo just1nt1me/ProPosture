@@ -20,7 +20,6 @@ from turn import get_ice_servers
 
 _SENTINEL_ = "_SENTINEL_"
 
-
 def pose_process(
     in_queue: Queue,
     out_queue: Queue,
@@ -58,8 +57,9 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
             "out_queue": self._out_queue,
             "model_complexity": model_complexity,
         })
-
         self._pose_process.start()
+        self.rep_counter=0
+        self.stage='START'
 
     def _infer_pose(self, image):
         self._in_queue.put_nowait(image)
@@ -78,12 +78,13 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
 
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         results = self._infer_pose(image)
-        # results = self._pose.process(image)
         if results.pose_landmarks is not None:
-            debug_image01 = draw_landmarks(
+            debug_image01, self.rep_counter, self.stage = draw_landmarks(
                 debug_image01,
                 results.pose_landmarks,
                 video_settings=self.video_settings,
+                rep_counter=self.rep_counter,
+                stage=self.stage
             )
         return av.VideoFrame.from_ndarray(debug_image01, format="bgr24")
 
@@ -93,7 +94,7 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
         print("Stopped!")
 
 
-def main():
+def streamlit():
     with st.expander("If you want to film yourself from the front"):
         model_complexity = st.radio("Model complexity", [0, 1, 2], index=0)
 
@@ -135,7 +136,7 @@ def main():
             if not ret:
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
-            stframe.image(draw_landmarks(frame, video_settings='Pushups aide', view='side'))
+            stframe.image(draw_landmarks(frame, video_settings='Pushups aide', view='side', rep_counter = ))
 
 if __name__ == "__main__":
-    main()
+    streamlit()

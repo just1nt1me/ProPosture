@@ -119,7 +119,7 @@ def main():
         if results.pose_landmarks is not None:
             debug_image01 = draw_landmarks(
                 debug_image01,
-                results.pose_landmarks,
+                results.pose_landmarks
             )
 
         key = cv.waitKey(1)
@@ -134,13 +134,14 @@ def main():
 
 def draw_landmarks(
     image,
+    rep_counter,
+    stage,
     landmarks='Show',
     # upper_body_only,
     visibility_th=0.5,
     video_settings='None',
     view='side',
-    rep_counter = 0,
-    stage = 'START'
+
 ):
     image_width, image_height = image.shape[1], image.shape[0]
 
@@ -293,14 +294,8 @@ def draw_landmarks(
                                                   )
 
             return image
-    return image
+    return image, rep_counter, stage
 
 if __name__ == '__main__':
     main()
-    draw_landmarks(landmarks='Show',
-    # upper_body_only,
-    visibility_th=0.5,
-    video_settings='None',
-    view='side',
-    rep_counter = 0,
-    stage = 'START')
+    draw_landmarks()[0]
