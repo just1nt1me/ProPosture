@@ -139,7 +139,7 @@ def streamlit():
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
             rep_counter += 0.009
-            stframe.image(draw_landmarks(frame, video_settings='Pushups aide', view='side', rep_counter=int(rep_counter), stage=None, stage='Start'))
+            stframe.image(draw_landmarks(frame, video_settings='Pushups aide', view='side', rep_counter=int(rep_counter), stage='Start'))
 
 if __name__ == "__main__":
     streamlit()
