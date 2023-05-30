@@ -58,8 +58,12 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
             "model_complexity": model_complexity,
         })
         self._pose_process.start()
-        self.rep_counter=0
-        self.stage='START'
+        self.rep_counter=None
+        self.stage=None
+        if self.rep_counter is None:
+            self.rep_counter=0
+        if self.stage is None:
+            self.stage = 'START'
 
     def _infer_pose(self, image):
         self._in_queue.put_nowait(image)
@@ -83,8 +87,6 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
                 debug_image01,
                 results.pose_landmarks,
                 video_settings=self.video_settings,
-                rep_counter=self.rep_counter,
-                stage=self.stage
             )
         return av.VideoFrame.from_ndarray(debug_image01, format="bgr24")
 
@@ -127,7 +129,7 @@ def streamlit():
         tfile = tempfile.NamedTemporaryFile(delete=False)
         tfile.write(uploaded_file.read())
         vf = cv2.VideoCapture(tfile.name)
-
+        rep_counter = 0.5
         stframe = st.empty()
         while vf.isOpened():
             ret, frame = vf.read()
@@ -136,7 +138,8 @@ def streamlit():
             if not ret:
                 print("Can't receive frame (stream end?). Exiting ...")
                 break
-            stframe.image(draw_landmarks(frame, video_settings='Pushups aide', view='side', rep_counter = 0, stage='Start'))
+            rep_counter += 0.009
+            stframe.image(draw_landmarks(frame, video_settings='Pushups aide', view='side', rep_counter=int(rep_counter), stage=None, stage='Start'))
 
 if __name__ == "__main__":
     streamlit()
