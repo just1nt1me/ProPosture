@@ -138,7 +138,7 @@ def draw_landmarks(
     # upper_body_only,
     visibility_th=0.5,
     video_settings='None',
-    view='side',
+    view='front',
     rep_counter = 0,
     stage = 'START'
 ):
