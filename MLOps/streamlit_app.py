@@ -11,7 +11,7 @@ import cv2
 import numpy as np
 import mediapipe as mp
 
-from main import draw_landmarks, preprocess_image, load_image
+from main import draw_landmarks
 
 from fake_objects import FakeResultObject, FakeLandmarksObject, FakeLandmarkObject
 
@@ -19,7 +19,6 @@ from turn import get_ice_servers
 
 
 _SENTINEL_ = "_SENTINEL_"
-
 
 def pose_process(
     in_queue: Queue,
@@ -58,8 +57,13 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
             "out_queue": self._out_queue,
             "model_complexity": model_complexity,
         })
-
         self._pose_process.start()
+        self.rep_counter=None
+        self.stage=None
+        if self.rep_counter is None:
+            self.rep_counter=0
+        if self.stage is None:
+            self.stage = 'START'
 
     def _infer_pose(self, image):
         self._in_queue.put_nowait(image)
@@ -78,12 +82,11 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
 
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         results = self._infer_pose(image)
-        # results = self._pose.process(image)
         if results.pose_landmarks is not None:
-            debug_image01 = draw_landmarks(
+            debug_image01, self.rep_counter, self.stage = draw_landmarks(
                 debug_image01,
                 results.pose_landmarks,
-                video_settings=self.video_settings
+                video_settings=self.video_settings,
             )
         return av.VideoFrame.from_ndarray(debug_image01, format="bgr24")
 
@@ -93,11 +96,11 @@ class Tokyo2020PictogramVideoProcessor(VideoProcessorBase):
         print("Stopped!")
 
 
-def main():
+def streamlit():
     with st.expander("If you want to film yourself from the front"):
         model_complexity = st.radio("Model complexity", [0, 1, 2], index=0)
 
-        video_settings = st.radio("Settings", ['None', 'Show', 'Pushups aide'])
+        video_settings = st.radio("Settings", ['None', 'Show', 'Display model'])
 
         def processor_factory():
             return Tokyo2020PictogramVideoProcessor(video_settings=video_settings,
@@ -126,7 +129,7 @@ def main():
         tfile = tempfile.NamedTemporaryFile(delete=False)
         tfile.write(uploaded_file.read())
         vf = cv2.VideoCapture(tfile.name)
-
+        rep_counter = 0.5
         stframe = st.empty()
         while vf.isOpened():
             ret, frame = vf.read()
@@ -138,4 +141,4 @@ def main():
             stframe.image(draw_landmarks(frame, video_settings='Pushups aide', view='side'))
 
 if __name__ == "__main__":
-    main()
+    streamlit()

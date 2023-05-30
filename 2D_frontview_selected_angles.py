@@ -29,8 +29,12 @@ cap = cv2.VideoCapture(path)
 
 # Pushup position variable
 stage = None
+full_rep_stage = None
 quality = None
 counter = 0
+top_full_rep_counter = 0
+bottom_full_rep_counter = 0
+elbow_angle_list=[]
 
 # Setup mediapipe instance
 with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
@@ -88,6 +92,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             cv2.putText(image, str(f'Elbows angle: {average_elbow_angle}'),
                            average_elbow_text_position,
                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+            elbow_angle_list.append(average_elbow_angle)
 
 
             ##2.2 COMPUTE X-DISTANCE BETWEEN SHOULDER AND WRIST
@@ -126,7 +131,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             if average_elbow_angle < 90:
                 stage="down"
             rep_counter_text_position = (30, 30)
-            #rep_stage_text_position = (30, 60)
+            # rep_stage_text_position = (30, 60)
             cv2.putText(image, str(f'Reps count: {counter}'),
                         rep_counter_text_position,
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
@@ -134,12 +139,31 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
             #             rep_stage_text_position,
             #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
 
+            if average_elbow_angle > 175 and full_rep_stage =='down':
+                top_full_rep_counter +=1
+            if average_elbow_angle > 175:
+                full_rep_stage = "up"
+            if average_elbow_angle < 60 and full_rep_stage == 'up':
+                bottom_full_rep_counter +=1
+            if average_elbow_angle < 60:
+                full_rep_stage="down"
+
+            # full_rep_counter_text_position = (30, 50)
+            # cv2.putText(image, str(f'Full rep counter: {top_full_rep_counter}'),
+            #             full_rep_counter_text_position,
+            #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
+            # btm_full_rep_counter_text_position = (30, 70)
+            # cv2.putText(image, str(f'Full rep counter2: {bottom_full_rep_counter}'),
+            #             btm_full_rep_counter_text_position,
+            #             cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
+
             ##3.2 FULL REP VERIFIER
             if average_elbow_angle in range(170,180):
                 advice = "GOOD JOB U LOSER ! Now down"
             if average_elbow_angle in range(0,65):
                 advice="GOOD JOB U LOSER ! Now push up"
-            rep_advice_text_position = (30, 60)
+            rep_advice_text_position = (30, 70)
             cv2.putText(image, str(f'{advice}'),
                         rep_advice_text_position,
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
@@ -151,7 +175,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
                 if x_distances_mean>0.075:
                     hands_status="Bad"
                     advice_hands = 'Align hands with shoulder'
-            hands_status_text_position = (30,100)
+            hands_status_text_position = (30,110)
             cv2.putText(image, str(f'Hands position: {hands_status}'),
                         hands_status_text_position,
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
@@ -163,7 +187,7 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
                 if shoulder_elbow_ratio>2:
                     elbow_status="Bad"
                     advice_elbows = "Tuck elbows in"
-            elbows_status_text_position = (30, 140)
+            elbows_status_text_position = (30, 150)
             cv2.putText(image, str(f'Elbows position: {elbow_status}'),
                         elbows_status_text_position,
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 2, cv2.LINE_AA)
@@ -210,3 +234,20 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
     #CLOSING DISPLAY WINDOW
     cap.release()
     cv2.destroyAllWindows()
+
+
+# maximas = []
+# minimas = []
+# Check each number in the list
+# for i in range(2, len(elbow_angle_list) - 2):
+#     if elbow_angle_list[i] > elbow_angle_list[i-2] and elbow_angle_list[i] > elbow_angle_list[i+2]:
+#         maximas.append(elbow_angle_list[i])
+#     if elbow_angle_list[i] < elbow_angle_list[i-2] and elbow_angle_list[i] < elbow_angle_list[i+2]:
+#         minimas.append(elbow_angle_list[i])
+
+
+top_rep_performance = 100*top_full_rep_counter/counter
+bottom_rep_performance = 100*(bottom_full_rep_counter+1)/counter
+
+print(f'% of reps with a perfect shape at the top: {top_rep_performance}%')
+print(f'% of reps with a perfect shape at the bottom: {bottom_rep_performance}%')
