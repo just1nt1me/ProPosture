@@ -250,4 +250,4 @@ top_rep_performance = 100*top_full_rep_counter/counter
 bottom_rep_performance = 100*(bottom_full_rep_counter+1)/counter
 
 print(f'% of reps with a perfect shape at the top: {top_rep_performance}%')
-print(f'% of reps with a perfect shape at the top: {bottom_rep_performance}%')
+print(f'% of reps with a perfect shape at the bottom: {bottom_rep_performance}%')
