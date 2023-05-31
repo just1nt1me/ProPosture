@@ -251,3 +251,110 @@ bottom_rep_performance = 100*(bottom_full_rep_counter+1)/counter
 
 print(f'% of reps with a perfect shape at the top: {top_rep_performance}%')
 print(f'% of reps with a perfect shape at the bottom: {bottom_rep_performance}%')
+
+# from jinja2 import Template
+
+# Sample metrics
+# elbows_position_score = 90.5
+# hands_position_score = 85.2
+
+# # Define the Jinja2 template
+# template = Template('''
+# Performance Review
+# -----------------
+# Repetitions: {{ rep_counter }}
+# Perfect Up Execution: {{ top_rep_performance }}%
+# Perfect Bottom Execution: {{ bottom_rep_performance }}%
+# Hands Position: {{ hands_position_score }}%
+# ''')
+
+# # Render the template with the metrics
+# report = template.render(
+#     rep_counter=counter,
+#     top_rep_performance=top_rep_performance,
+#     bottom_rep_performance=bottom_rep_performance,
+#     hands_position_score=hands_position_score
+# )
+
+# # Print the generated report
+# print(report)
+
+#Generating a PDF Report
+
+# #imports needed
+import subprocess
+# from reportlab.lib.pagesizes import letter
+# from reportlab.pdfgen import canvas
+
+# # Sample metrics
+# repetitions = counter
+# perfect_execution_percentage = top_rep_performance
+# elbows_position_score = 90.5
+# hands_position_score = 85.2
+
+# # Create a PDF canvas
+# pdf_canvas = canvas.Canvas("performance_review.pdf", pagesize=letter)
+
+# # Set the font properties
+# pdf_canvas.setFont("Helvetica", 12)
+
+# # Draw the performance review content on the canvas
+# pdf_canvas.drawString(50, 700, "Performance Review")
+# pdf_canvas.drawString(50, 670, "Repetitions: {}".format(repetitions))
+# pdf_canvas.drawString(50, 640, "Perfect Execution: {}%".format(perfect_execution_percentage))
+# pdf_canvas.drawString(50, 610, "Elbows Position: {}%".format(elbows_position_score))
+# pdf_canvas.drawString(50, 580, "Hands Position: {}%".format(hands_position_score))
+
+# # Save and close the PDF canvas
+# pdf_canvas.save()
+
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+
+# Sample metrics
+repetitions = 20
+perfect_execution_percentage = 80.0
+elbows_position_score = 90.5
+hands_position_score = 85.2
+
+# Create a PDF document
+pdf = SimpleDocTemplate("performance_review.pdf", pagesize=letter)
+
+# Define table data
+data = [
+    ['Metrics', 'Score'],
+    ['Repetitions', repetitions],
+    ['Perfect Execution', '{}%'.format(perfect_execution_percentage)],
+    ['Elbows Position', '{}%'.format(elbows_position_score)],
+    ['Hands Position', '{}%'.format(hands_position_score)],
+]
+
+# Define table style
+table_style = TableStyle([
+    ('BACKGROUND', (0, 0), (-1, 0), colors.gray),
+    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+    ('FONTSIZE', (0, 0), (-1, 0), 14),
+    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+    ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+    ('GRID', (0, 0), (-1, -1), 1, colors.black),
+])
+
+# Conditionally apply style to "perfect execution" value cell
+if perfect_execution_percentage > 70.0:
+    table_style.add('BACKGROUND', (1, 2), (1, -1), colors.green)
+
+# Create the table and apply style
+table = Table(data)
+table.setStyle(table_style)
+
+# Build the table and add it to the PDF document
+elements = []
+elements.append(table)
+pdf.build(elements)
+
+
+# Open the generated PDF with the default PDF viewer
+subprocess.Popen(["open", "performance_review.pdf"])
