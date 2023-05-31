@@ -67,7 +67,7 @@ def get_hand_align(shoulder_distance, elbow_angles, align_status_color = None, a
             align_status_color = (31, 194, 53)
         if x_distances_mean>0.075:
             align_status_color = (14, 14, 232)
-            advice_align_hands = 'Hands too wide!'
+            advice_align_hands = 'Hands too wide'
     return align_status_color, advice_align_hands
 
 def get_shoulder_elbow_dist(shoulder_elbow_distance, elbow_angles, elbow_status_color = None, advice_elbows = None):
@@ -153,17 +153,17 @@ def get_knee(knee_angles, sideview_angle, advice_knee = None):
     if sideview_angle == 'left':
         if left_knee_angle >= 160:
             knee_status_color= (31, 194, 53)
-        if left_knee_angle in range(155,160):
+        if left_knee_angle in range(150,160):
             knee_status_color= (0, 255, 255)
-        if left_knee_angle < 155:
+        if left_knee_angle < 150:
             knee_status_color= (14, 14, 232)
             advice_knee = 'Straighten legs'
     if sideview_angle == 'right':
         if right_knee_angle >= 160:
             knee_status_color= (31, 194, 53)
-        if right_knee_angle in range(155,160):
+        if right_knee_angle in range(150,160):
             knee_status_color= (0, 255, 255)
-        if right_knee_angle < 155:
+        if right_knee_angle < 150:
             knee_status_color = (14, 14, 232)
             advice_knee = 'Straighten legs'
     return knee_status_color, advice_knee

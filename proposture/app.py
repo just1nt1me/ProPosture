@@ -7,7 +7,7 @@ from proposture.utils import load_video, get_angles, get_landmarks, get_video_di
 from proposture.metrics import get_reps_and_stage, get_full_reps, get_rep_advice, get_neck, get_hip, get_knee, get_hand, get_hand_align, get_shoulder_elbow_dist
 from proposture.visuals import show_status, show_neck, show_hip, show_knee, show_hand, show_align, show_elbow
 import subprocess
-from reportlab.lib.pagesizes import letter
+from reportlab.lib.pagesizes import landscape, letter
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 
@@ -15,7 +15,7 @@ mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
 #load video
-video_file_path = "media/frontview_pushupbadgood.mp4"
+video_file_path = "media/new_pushup.mp4"
 cap = load_video(video_file_path)
 height, width = get_video_dimensions(cap)
 advice_list = []
@@ -160,15 +160,15 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START', t
         cap.release()
         cv2.destroyAllWindows()
 
-    top_rep_performance = 100*top_full_rep_counter/rep_counter
-    bottom_rep_performance = 100*(bottom_full_rep_counter+1)/rep_counter
+    top_rep_performance = round(100*top_full_rep_counter/rep_counter)
+    bottom_rep_performance = round(100*(bottom_full_rep_counter+1)/rep_counter)
 
     #GENERATING PERFORMANCE REVIEW PDF
     # Sample metrics
     #hands_position_score = 85.2
 
     # Create a PDF document
-    pdf = SimpleDocTemplate("performance_review.pdf", pagesize=letter)
+    pdf = SimpleDocTemplate("performance_review.pdf", pagesize=landscape(letter))
 
     # Define table data
     data = [
@@ -189,6 +189,7 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START', t
         ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
         ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
         ('GRID', (0, 0), (-1, -1), 1, colors.black),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
     ])
 
     # Conditionally apply style to "perfect execution" value cell
@@ -199,16 +200,19 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START', t
         table_style.add('BACKGROUND', (1, -1), (1, -1), colors.green)
 
     # Create the table and apply style
-    table = Table(data)
+    table = Table(data,colWidths=[400,150],rowHeights=[40,25,25,25],hAlign='LEFT')
     table.setStyle(table_style)
 
+    # Set table properties
+    # table._argW[1] = 250  # Adjust the width of the table
+    # table.spaceBefore = 20  # Add space before the table
+
     # Build the table and add it to the PDF document
-    elements = []
-    elements.append(table)
+    elements = [table]
     pdf.build(elements)
 
     # Open the generated PDF with the default PDF viewer
     subprocess.Popen(["open", "performance_review.pdf"])
 
 if __name__ == "__main__":
-    main(cap, height, width)
+    main(cap, height, width,view='side')
