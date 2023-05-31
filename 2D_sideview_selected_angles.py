@@ -21,7 +21,7 @@ def calculate_angle(a,b,c):
 
 list_videos=["new_pushup.mp4","hip_test_pushup.mp4"]
 
-path=os.path.join(os.path.dirname(os.getcwd()),"ProPosture","raw_data",list_videos[1])
+path=os.path.join(os.path.dirname(os.getcwd()),"ProPosture","media",list_videos[1])
 
 
 # CAREFUL: THIS FILE OPERATES ON A LIVEFEED

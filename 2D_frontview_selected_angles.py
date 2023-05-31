@@ -20,7 +20,7 @@ def calculate_angle(a,b,c):
 
     return angle
 
-path=os.path.join(os.path.dirname(os.getcwd()),"ProPosture","raw_data","frontview_pushupbadgood.mp4")
+path=os.path.join(os.path.dirname(os.getcwd()),"ProPosture","media","frontview_pushupbadgood.mp4")
 
 
 # CAREFUL: THIS FILE OPERATES ON A LIVEFEED
@@ -235,19 +235,59 @@ with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidenc
     cap.release()
     cv2.destroyAllWindows()
 
-
-# maximas = []
-# minimas = []
-# Check each number in the list
-# for i in range(2, len(elbow_angle_list) - 2):
-#     if elbow_angle_list[i] > elbow_angle_list[i-2] and elbow_angle_list[i] > elbow_angle_list[i+2]:
-#         maximas.append(elbow_angle_list[i])
-#     if elbow_angle_list[i] < elbow_angle_list[i-2] and elbow_angle_list[i] < elbow_angle_list[i+2]:
-#         minimas.append(elbow_angle_list[i])
-
-
 top_rep_performance = 100*top_full_rep_counter/counter
 bottom_rep_performance = 100*(bottom_full_rep_counter+1)/counter
 
-print(f'% of reps with a perfect shape at the top: {top_rep_performance}%')
-print(f'% of reps with a perfect shape at the bottom: {bottom_rep_performance}%')
+#Generating a PDF Report
+
+import subprocess
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+
+# Sample metrics
+repetitions = counter
+perfect_execution_percentage_top = top_rep_performance
+perfect_execution_percentage_bottom = bottom_rep_performance
+hands_position_score = 85.2
+
+# Create a PDF document
+pdf = SimpleDocTemplate("performance_review.pdf", pagesize=letter)
+
+# Define table data
+data = [
+    ['Metrics', 'Score'],
+    ['Repetitions', repetitions],
+    ['Proportion of pushups perfect at the top', '{}%'.format(perfect_execution_percentage_top)],
+    ['Proportion of pushups perfect at the bottom', '{}%'.format(perfect_execution_percentage_bottom)],
+    ['Hands Position', '{}%'.format(hands_position_score)],
+]
+
+# Define table style
+table_style = TableStyle([
+    ('BACKGROUND', (0, 0), (-1, 0), colors.gray),
+    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+    ('FONTSIZE', (0, 0), (-1, 0), 14),
+    ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+    ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+    ('GRID', (0, 0), (-1, -1), 1, colors.black),
+])
+
+# Conditionally apply style to "perfect execution" value cell
+if perfect_execution_percentage_top > 85.0:
+    table_style.add('BACKGROUND', (1, 2), (1, -1), colors.green)
+
+# Create the table and apply style
+table = Table(data)
+table.setStyle(table_style)
+
+# Build the table and add it to the PDF document
+elements = []
+elements.append(table)
+pdf.build(elements)
+
+
+# Open the generated PDF with the default PDF viewer
+subprocess.Popen(["open", "performance_review.pdf"])
