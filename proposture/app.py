@@ -4,8 +4,12 @@ import mediapipe as mp
 
 #import modules
 from proposture.utils import load_video, get_angles, get_landmarks, get_video_dimensions, get_sideview
-from proposture.metrics import get_reps_and_stage, get_rep_advice, get_neck, get_hip, get_knee, get_hand, get_hand_align, get_shoulder_elbow_dist
+from proposture.metrics import get_reps_and_stage, get_full_reps, get_rep_advice, get_neck, get_hip, get_knee, get_hand, get_hand_align, get_shoulder_elbow_dist
 from proposture.visuals import show_status, show_neck, show_hip, show_knee, show_hand, show_align, show_elbow
+import subprocess
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
@@ -18,7 +22,7 @@ advice_list = []
 
 #set up mediapipe instance
 # TODO: set view variable (can be passed as *args)
-def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START'):
+def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START', top_full_rep_counter=0, bottom_full_rep_counter=0,full_rep_stage='start'):
     with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         while cap.isOpened():
             ret, frame = cap.read()
@@ -64,11 +68,15 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START'):
             reps_stage = get_reps_and_stage(elbow_angles, rep_counter, stage)
             rep_advice = get_rep_advice(elbow_angles, sideview_angle)
             show_status(image, rep_advice, *reps_stage)
+            full_reps_data = get_full_reps(elbow_angles,top_full_rep_counter, bottom_full_rep_counter, full_rep_stage)
 
             #update rep_advice, stage, rep_counter for next loop
             rep_advice = rep_advice
             stage = reps_stage[0]
             rep_counter = reps_stage[1]
+            top_full_rep_counter=full_reps_data[0]
+            bottom_full_rep_counter=full_reps_data[1]
+            full_rep_stage=full_reps_data[2]
 
             # TODO: based on view, implement different get_metrics function
             if view == 'front':
@@ -151,6 +159,56 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START'):
         #CLOSING DISPLAY WINDOW
         cap.release()
         cv2.destroyAllWindows()
+
+    top_rep_performance = 100*top_full_rep_counter/rep_counter
+    bottom_rep_performance = 100*(bottom_full_rep_counter+1)/rep_counter
+
+    #GENERATING PERFORMANCE REVIEW PDF
+    # Sample metrics
+    #hands_position_score = 85.2
+
+    # Create a PDF document
+    pdf = SimpleDocTemplate("performance_review.pdf", pagesize=letter)
+
+    # Define table data
+    data = [
+        ['Metrics', 'Score'],
+        ['Repetitions', rep_counter],
+        ['Proportion of pushups perfect at the top', '{}%'.format(top_rep_performance)],
+        ['Proportion of pushups perfect at the bottom', '{}%'.format(bottom_rep_performance)],
+        #['Hands Position', '{}%'.format(hands_position_score)],
+    ]
+
+    # Define table style
+    table_style = TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.gray),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 14),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black),
+    ])
+
+    # Conditionally apply style to "perfect execution" value cell
+    if top_rep_performance > 85.0:
+        table_style.add('BACKGROUND', (1, 2), (1, 2), colors.green)
+
+    if bottom_rep_performance > 85.0:
+        table_style.add('BACKGROUND', (1, -1), (1, -1), colors.green)
+
+    # Create the table and apply style
+    table = Table(data)
+    table.setStyle(table_style)
+
+    # Build the table and add it to the PDF document
+    elements = []
+    elements.append(table)
+    pdf.build(elements)
+
+    # Open the generated PDF with the default PDF viewer
+    subprocess.Popen(["open", "performance_review.pdf"])
 
 if __name__ == "__main__":
     main(cap, height, width)

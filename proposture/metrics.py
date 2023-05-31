@@ -10,7 +10,21 @@ def get_reps_and_stage(elbow_angles, rep_counter, stage):
         rep_counter +=1
     return stage, rep_counter
 
-# Full Rep Verifier
+#Full rep counter
+def get_full_reps(elbow_angles, top_full_rep_counter, bottom_full_rep_counter, full_rep_stage):
+    left_elbow_angle, right_elbow_angle = elbow_angles
+    average_elbow_angle=(left_elbow_angle+right_elbow_angle)/2
+    if average_elbow_angle > 175 and full_rep_stage =='down':
+        top_full_rep_counter +=1
+    if average_elbow_angle > 175:
+        full_rep_stage = "up"
+    if average_elbow_angle < 60 and full_rep_stage == 'up':
+        bottom_full_rep_counter +=1
+    if average_elbow_angle < 60:
+        full_rep_stage="down"
+    return top_full_rep_counter, bottom_full_rep_counter, full_rep_stage
+
+# Full Rep Verifier, live advices
 def get_rep_advice(elbow_angles, sideview_angle = None, rep_advice = None):
     left_elbow_angle, right_elbow_angle = elbow_angles
     average_elbow_angle=(left_elbow_angle+right_elbow_angle)/2
