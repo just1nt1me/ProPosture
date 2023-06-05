@@ -15,7 +15,7 @@ mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
 
 #load video
-video_file_path = "media/new_pushup.mp4"
+video_file_path = "media/latest_sideview.mp4"
 cap = load_video(video_file_path)
 height, width = get_video_dimensions(cap)
 advice_list = []
