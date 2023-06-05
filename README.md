@@ -28,7 +28,7 @@ Coming soon!
 
 Navigate to the base level of the repository
 ```
-cd {your/path/here}/Proposture
+cd {your/path/here}/ProPosture
 ```
 
 Install requirements
