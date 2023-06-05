@@ -11,7 +11,7 @@ _Video stream from the streamlit application._
 
 ## Streamlit Interface
 ### Video Upload
-![Screenshot 2022-12-06 at 17 51 13](https://user-images.githubusercontent.com/113004083/206093112-54257082-c7f0-4019-9357-36c29520c0ea.png)
+![interface.png](https://github.com/Clement733/ProPosture/blob/main/images/interface.png)
 
 ### Annotated Output
 ![Screenshot 2022-12-06 at 17 54 19](https://user-images.githubusercontent.com/113004083/206092598-ad12a1bc-9a06-493b-94ad-9d934b265986.png)
