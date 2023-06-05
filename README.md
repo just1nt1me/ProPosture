@@ -13,14 +13,11 @@ _Video stream from the streamlit application._
 ### Video Upload
 ![interface.png](https://github.com/Clement733/ProPosture/blob/main/images/interface.png)
 
-### Annotated Output
-![Screenshot 2022-12-06 at 17 54 19](https://user-images.githubusercontent.com/113004083/206092598-ad12a1bc-9a06-493b-94ad-9d934b265986.png)
+### Annotated Model Output
+![model.png](https://github.com/Clement733/ProPosture/blob/main/images/model.png)
 
-### Synchronization Error
-![Screenshot 2022-12-06 at 17 55 15](https://user-images.githubusercontent.com/113004083/206092228-29ef6d8a-a757-45ce-a1f0-a33d518616dc.png)
-
-### Link with Highest Error
-![Screenshot 2022-12-06 at 17 56 11](https://user-images.githubusercontent.com/113004083/206092385-c5743711-9659-41d5-bf08-0372cb1f544e.png)
+### Feedback PDF
+![feedback.png](https://github.com/Clement733/ProPosture/blob/main/images/feedback.png)
 
 ## Getting Started
 ### Setup
