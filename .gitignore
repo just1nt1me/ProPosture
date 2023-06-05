@@ -1,6 +1,5 @@
 #heavy files
 media/
-*.mp4
 *.jpg
 raw_data/
 *.csv

@@ -15,7 +15,7 @@ Coming soon!
 
 ## Streamlit Interface
 ### Video Upload
-![interface.png](https://github.com/Clement733/ProPosture/blob/main/images/interface.png)
+![screen_record.mp4](https://github.com/Clement733/ProPosture/blob/main/images/screen_record.mp4)
 
 ### Annotated Model Output
 ![model.png](https://github.com/Clement733/ProPosture/blob/main/images/model.png)
