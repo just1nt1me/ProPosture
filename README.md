@@ -9,6 +9,10 @@ https://streamable.com/h6gux7
 
 _Video stream from the streamlit application._
 
+## YouTube of ProPosture Presentation at Le Wagon Tokyo
+
+Coming soon!
+
 ## Streamlit Interface
 ### Video Upload
 ![interface.png](https://github.com/Clement733/ProPosture/blob/main/images/interface.png)
