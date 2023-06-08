@@ -3,37 +3,32 @@ _Your personal AI workout assistant._
 
 Is there an objective way to **mathematically quantify** form during exercising?
 
-Using trigonometry-based error tracking to objectively determine areas of greatest performance improvement through frame-by-frame video analysis. 
+Using trigonometry-based error tracking to objectively determine areas of greatest performance improvement through frame-by-frame video analysis.
 
 https://streamable.com/h6gux7
 
 _Video stream from the streamlit application._
 
+## YouTube of ProPosture Presentation at Le Wagon Tokyo
+
+Coming soon!
+
 ## Streamlit Interface
 ### Video Upload
-![Screenshot 2022-12-06 at 17 51 13](https://user-images.githubusercontent.com/113004083/206093112-54257082-c7f0-4019-9357-36c29520c0ea.png)
+![interface.png](https://github.com/Clement733/ProPosture/blob/main/images/interface.png)
 
-### Annotated Output
-![Screenshot 2022-12-06 at 17 54 19](https://user-images.githubusercontent.com/113004083/206092598-ad12a1bc-9a06-493b-94ad-9d934b265986.png)
+### Annotated Model Output
+![model.png](https://github.com/Clement733/ProPosture/blob/main/images/model.png)
 
-### Synchronization Error
-![Screenshot 2022-12-06 at 17 55 15](https://user-images.githubusercontent.com/113004083/206092228-29ef6d8a-a757-45ce-a1f0-a33d518616dc.png)
-
-### Link with Highest Error
-![Screenshot 2022-12-06 at 17 56 11](https://user-images.githubusercontent.com/113004083/206092385-c5743711-9659-41d5-bf08-0372cb1f544e.png)
-
-### Frame-by-frame
-![Screenshot 2022-12-06 at 17 55 38](https://user-images.githubusercontent.com/113004083/206093265-3b450efc-86b0-48cc-b1dd-00e3ebbf71bb.png)
-
-## Application Backend
-API scripts at https://github.com/xkeeja/insync-backend.
+### Feedback PDF
+![feedback.png](https://github.com/Clement733/ProPosture/blob/main/images/feedback.png)
 
 ## Getting Started
 ### Setup
 
 Navigate to the base level of the repository
 ```
-cd {your/path/here}/insync-frontend
+cd {your/path/here}/ProPosture
 ```
 
 Install requirements
@@ -44,38 +39,22 @@ pip install -r requirements.txt
 
 ### Local Streamlit
 ```
-make run_streamlit
+streamlit run MLOps/streamlit_app.py
 ```
-
-### Set API link
-Local (default port) -- FastAPI functions named in [insync-backend](https://github.com/xkeeja/insync-backend)
-```
-url = "http://127.0.0.1:8000/vid_stats"
-url = "http://127.0.0.1:8000/vid_process"
-```
-Server
-```
-url = "{your_url_here}/vid_stats"
-url = "{your_url_here}/vid_process"
-```
-
-### Streamlit Deployment
-Main file path = `app.py`
 
 ## Built With
 - [Python](https://www.python.org/) - Frontend & Backend
 - [Streamlit](https://streamlit.io/) - Frontend Deployment
-- [GCP](https://cloud.google.com/) - Storage & Backend Deployment
-- [TensorFlow](https://tfhub.dev/google/movenet/multipose/lightning/1) - Pose Detection Model
-- CSS - Frontend Styling
+- [OpenCV](https://opencv.org/) - Computer Vision
+- [Mediapipe](https://developers.google.com/mediapipe) - Pose Detection Model
 
 ## Acknowledgements
-Inspired by [Kanami](https://www.linkedin.com/in/kanami-oyama-9a666b243/)'s love of dance.
+Inspired by [Clement](https://www.linkedin.com/in/cl%C3%A9ment-cipriani-08b1aa26a/)'s passion for the gym.
 
 ## Team Members
-- Kanami Oyama ([GitHub](https://github.com/kanpinpon)) ([LinkedIn](https://www.linkedin.com/in/kanami-oyama-9a666b243/))
-- Jaylon Saville ([GitHub](https://github.com/jaysaville)) ([LinkedIn](https://www.linkedin.com/in/jaysaville/))
-- Vincent-Victor Rodriguez--Le Roy ([GitHub](https://github.com/Slokem)) ([LinkedIn](https://www.linkedin.com/in/vincent-victor-r-328aa5a8/))
+- Justin Carville ([GitHub](https://github.com/just1nt1me)) ([LinkedIn](https://www.linkedin.com/in/jccarville/))
+- Clement Cipriani ([GitHub](https://github.com/Clement733)) ([LinkedIn](https://www.linkedin.com/in/cl%C3%A9ment-cipriani-08b1aa26a/))
+- Hippolyte Carel ([GitHub](https://github.com/HippolyteLW)) ([LinkedIn](https://www.linkedin.com/in/hippolytecarel/))
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
