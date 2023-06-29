@@ -10,20 +10,6 @@ def get_reps_and_stage(elbow_angles, rep_counter, stage):
         rep_counter +=1
     return stage, rep_counter
 
-#Full rep counter
-def get_full_reps(elbow_angles, top_full_rep_counter, bottom_full_rep_counter, full_rep_stage):
-    left_elbow_angle, right_elbow_angle = elbow_angles
-    average_elbow_angle=(left_elbow_angle+right_elbow_angle)/2
-    if average_elbow_angle > 175 and full_rep_stage =='down':
-        top_full_rep_counter +=1
-    if average_elbow_angle > 175:
-        full_rep_stage = "up"
-    if average_elbow_angle < 60 and full_rep_stage == 'up':
-        bottom_full_rep_counter +=1
-    if average_elbow_angle < 60:
-        full_rep_stage="down"
-    return top_full_rep_counter, bottom_full_rep_counter, full_rep_stage
-
 # Full Rep Verifier, live advices
 def get_rep_advice(elbow_angles, sideview_angle = None, rep_advice = None):
     left_elbow_angle, right_elbow_angle = elbow_angles
@@ -94,7 +80,7 @@ def get_neck(neck_angles, sideview_angle, advice_neck = None):
             neck_status_color= (0, 255, 255)
         if left_neck_angle < 150:
             neck_status_color= (14, 14, 232)
-            advice_neck = 'Tuck chin in'
+            advice_neck = 'Raise head'
     if sideview_angle == 'right':
         if right_neck_angle >= 165:
             neck_status_color= (31, 194, 53)
@@ -102,7 +88,7 @@ def get_neck(neck_angles, sideview_angle, advice_neck = None):
             neck_status_color= (0, 255, 255)
         if right_neck_angle < 150:
             neck_status_color = (14, 14, 232)
-            advice_neck = 'Tuck chin in'
+            advice_neck = 'Raise head'
     return neck_status_color, advice_neck
 
 # TODO: this condition doesn't work well

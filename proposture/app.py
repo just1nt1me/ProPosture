@@ -4,12 +4,9 @@ import mediapipe as mp
 
 #import modules
 from proposture.utils import load_video, get_angles, get_landmarks, get_video_dimensions, get_sideview
-from proposture.metrics import get_reps_and_stage, get_full_reps, get_rep_advice, get_neck, get_hip, get_knee, get_hand, get_hand_align, get_shoulder_elbow_dist
+from proposture.metrics import get_reps_and_stage, get_rep_advice, get_neck, get_hip, get_knee, get_hand, get_hand_align, get_shoulder_elbow_dist
 from proposture.visuals import show_status, show_neck, show_hip, show_knee, show_hand, show_align, show_elbow
-import subprocess
-from reportlab.lib.pagesizes import landscape, letter
-from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from proposture.report import get_full_reps, get_pdf
 
 mp_drawing = mp.solutions.drawing_utils
 mp_pose = mp.solutions.pose
@@ -22,7 +19,8 @@ advice_list = []
 
 #set up mediapipe instance
 # TODO: set view variable (can be passed as *args)
-def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START', top_full_rep_counter=0, bottom_full_rep_counter=0,full_rep_stage='start'):
+def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START',
+         top_full_rep_counter=0, bottom_full_rep_counter=0, full_rep_stage='start'):
     with mp.solutions.pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
         while cap.isOpened():
             ret, frame = cap.read()
@@ -68,17 +66,18 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START', t
             reps_stage = get_reps_and_stage(elbow_angles, rep_counter, stage)
             rep_advice = get_rep_advice(elbow_angles, sideview_angle)
             show_status(image, rep_advice, *reps_stage)
-            full_reps_data = get_full_reps(elbow_angles,top_full_rep_counter, bottom_full_rep_counter, full_rep_stage)
 
             #update rep_advice, stage, rep_counter for next loop
             rep_advice = rep_advice
             stage = reps_stage[0]
             rep_counter = reps_stage[1]
+
+            # get full reps data for PDF report
+            full_reps_data = get_full_reps(elbow_angles,top_full_rep_counter, bottom_full_rep_counter, full_rep_stage)
             top_full_rep_counter=full_reps_data[0]
             bottom_full_rep_counter=full_reps_data[1]
             full_rep_stage=full_reps_data[2]
 
-            # TODO: based on view, implement different get_metrics function
             if view == 'front':
                 align = get_hand_align(shoulder_distance, elbow_angles)
                 elbow = get_shoulder_elbow_dist(shoulder_elbow_distance, elbow_angles)
@@ -136,9 +135,6 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START', t
                     cv2.putText(image, advice, (15, text_y),
                                 cv2.FONT_HERSHEY_DUPLEX, 0.7, (0, 0, 0), 1, cv2.LINE_AA)
 
-
-
-
             #Render detections
             mp.solutions.drawing_utils.draw_landmarks(image, results.pose_landmarks,
                                                   mp.solutions.pose.POSE_CONNECTIONS,
@@ -147,7 +143,6 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START', t
                                                   mp.solutions.drawing_utils.DrawingSpec(
                                                       color=(245, 66, 230), thickness=2, circle_radius=2)
                                                   )
-
 
             #5 DISPLAYING WINDOW
             cv2.imshow('Mediapipe Feed', image)
@@ -160,59 +155,10 @@ def main(cap, height, width, view = 'front', rep_counter = 0, stage = 'START', t
         cap.release()
         cv2.destroyAllWindows()
 
+    # generate performance review pdf
     top_rep_performance = round(100*top_full_rep_counter/rep_counter)
     bottom_rep_performance = round(100*(bottom_full_rep_counter+1)/rep_counter)
-
-    #GENERATING PERFORMANCE REVIEW PDF
-    # Sample metrics
-    #hands_position_score = 85.2
-
-    # Create a PDF document
-    pdf = SimpleDocTemplate("performance_review.pdf", pagesize=landscape(letter))
-
-    # Define table data
-    data = [
-        ['Metrics', 'Score'],
-        ['Repetitions', rep_counter],
-        ['Proportion of pushups perfect at the top', '{}%'.format(top_rep_performance)],
-        ['Proportion of pushups perfect at the bottom', '{}%'.format(bottom_rep_performance)],
-        #['Hands Position', '{}%'.format(hands_position_score)],
-    ]
-
-    # Define table style
-    table_style = TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.gray),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 14),
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-        ('GRID', (0, 0), (-1, -1), 1, colors.black),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-    ])
-
-    # Conditionally apply style to "perfect execution" value cell
-    if top_rep_performance > 85.0:
-        table_style.add('BACKGROUND', (1, 2), (1, 2), colors.green)
-
-    if bottom_rep_performance > 85.0:
-        table_style.add('BACKGROUND', (1, -1), (1, -1), colors.green)
-
-    # Create the table and apply style
-    table = Table(data,colWidths=[400,150],rowHeights=[40,25,25,25],hAlign='LEFT')
-    table.setStyle(table_style)
-
-    # Set table properties
-    # table._argW[1] = 250  # Adjust the width of the table
-    # table.spaceBefore = 20  # Add space before the table
-
-    # Build the table and add it to the PDF document
-    elements = [table]
-    pdf.build(elements)
-
-    # Open the generated PDF with the default PDF viewer
-    subprocess.Popen(["open", "performance_review.pdf"])
+    get_pdf(rep_counter, top_rep_performance, bottom_rep_performance)
 
 if __name__ == "__main__":
-    main(cap, height, width,view='side')
+    main(cap, height, width, view='side')
