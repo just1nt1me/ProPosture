@@ -8,8 +8,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    video_url = "../media/latest_sideview.mp4"  # Update with the actual video file URL
-    return render_template('index.html', video_url=video_url)
+    return "<p>Hello, World!</p>"
+    # return render_template('index.html', video_url=video_url)
 
 @app.route('/video')
 def video():
