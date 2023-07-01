@@ -35,7 +35,7 @@ def upload():
         return 'No video selected'
     if video and allowed_file(video.filename):
         video.save('static/videos/' + video.filename)
-        return render_template('preview.html', video_name=video.filename)
+        return render_template('sideview.html', video_name=video.filename)
     return 'Invalid video file'
 
 @app.route('/video')
