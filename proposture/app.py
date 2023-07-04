@@ -1,17 +1,10 @@
 #import libraries
 import cv2
-import mediapipe as mp
 from flask import Flask, render_template, request, Response
 
 from proposture.new_main import main  # Import the main function from your app.py
 # Import other necessary modules and functions as needed
-from proposture.utils import load_video, get_angles, get_landmarks, get_video_dimensions, get_sideview
-from proposture.metrics import get_reps_and_stage, get_rep_advice, get_neck, get_hip, get_knee, get_hand, get_hand_align, get_shoulder_elbow_dist
-from proposture.visuals import show_status, show_neck, show_hip, show_knee, show_hand, show_align, show_elbow
-from proposture.report import get_full_reps, get_pdf
-
-mp_drawing = mp.solutions.drawing_utils
-mp_pose = mp.solutions.pose
+from proposture.utils import load_video, get_video_dimensions
 
 app = Flask(__name__)
 
