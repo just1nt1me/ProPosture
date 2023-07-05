@@ -9,9 +9,9 @@ https://streamable.com/h6gux7
 
 _Video stream from the streamlit application._
 
-## YouTube of ProPosture Presentation at Le Wagon Tokyo
+## ProPosture Presentation and Live Demo at Le Wagon Tokyo
 
-Coming soon!
+<iframe width="560" height="315" src="https://www.youtube.com/embed/cBPf38X5R0Y" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 ## Streamlit Interface
 ### Video Upload
