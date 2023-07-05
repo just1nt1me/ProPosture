@@ -7,7 +7,7 @@ Using trigonometry-based error tracking to objectively determine areas of greate
 
 ## ProPosture Presentation and Live Demo at Le Wagon Tokyo
 
-[![Video Thumbnail](path/to/thumbnail.png)](https://www.youtube.com/watch?v=cBPf38X5R0Y)
+[![thumbnail.png](https://github.com/just1nt1me/ProPosture/blob/main/images/thumbnail.png)](https://www.youtube.com/watch?v=cBPf38X5R0Y)
 
 ## Streamlit Interface
 ### Video Upload
