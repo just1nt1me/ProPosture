@@ -1,0 +1,25 @@
+<!-- <!doctype html>
+<html>
+<head>
+    <title>Preview Video</title>
+</head>
+<body>
+    <video width="320" height="240" controls>
+        <source src="{{url_for('static', filename='videos/' + video_name)}}" type="video/mp4">
+    </video>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload Video</title>
+</head>
+<body>
+    <h1>Processed Video</h1>
+    <video width="640" height="480" controls>
+        <source src="{{ url_for('static', filename=video_path) }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</body>
+</html>

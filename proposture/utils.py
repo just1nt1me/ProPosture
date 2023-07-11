@@ -8,6 +8,7 @@ def load_video(video_file_path):
     cap = cv2.VideoCapture(video_file_path)
     return cap
 
+
 # Get video dimensions for displaying text on body
 def get_video_dimensions(cap):
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
